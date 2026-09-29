@@ -12,8 +12,23 @@ function Navbar() {
 							<Link
 								to="/"
 								className={location.pathname === "/" ? "active" : ""}>
+								{/* Login */}
+							</Link>
+							{/* <Link
+								to="/"
+								className={location.pathname === "/" ? "active" : ""}>
 								Login
 							</Link>
+							<Link
+								to="/"
+								className={location.pathname === "/" ? "active" : ""}>
+								Login
+							</Link>
+							<Link
+								to="/"
+								className={location.pathname === "/" ? "active" : ""}>
+								Login
+							</Link> */}
 						</div>
 					</div>
 				</div>
