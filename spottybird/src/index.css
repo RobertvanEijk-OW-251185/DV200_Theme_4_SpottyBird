@@ -109,3 +109,59 @@ code {
 	padding: 4px 8px;
 	background: var(--code-bg);
 } */
+
+:root {
+	--background-base: #f8fbf8;
+
+	--white: #fff;
+	--black: #000;
+	--grey-text: #333;
+	--grey-subtext: #666;
+}
+
+h1 {
+	font-family: "Work Sans";
+	font-size: 3.75rem;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+h2 {
+	font-family: "Work Sans";
+	font-size: 1.25rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+h3 {
+	font-family: "Work Sans";
+	font-size: 1.25rem;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+p {
+	color: #b0b0b0;
+	font-family: "Work Sans";
+	font-size: 0.9375rem;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+body {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	margin: 0;
+
+	width: 100vw;
+	height: 100vh;
+
+	background-color: var(--background-base) !important;
+}
