@@ -27,14 +27,18 @@
 	display: flex;
 	flex-direction: column;
 
-	justify-content: space-around;
+	justify-content: space-between;
 	align-items: flex-start;
 
 	height: 100%;
-	width: 70%;
+	width: 50vw;
 
-	padding-left: 8rem;
-	padding-right: 8rem;
+	/* padding: 8rem; */
+	padding-left: 6rem;
+	padding-right: 6rem;
+
+	/* margin-top: 8rem !important;
+	margin-bottom: 8rem; */
 
 	background: url("../assets/appImages/LoginHeroImage.png") center / cover
 		no-repeat;
@@ -48,6 +52,8 @@
 	align-items: flex-start;
 	flex-shrink: 0;
 	align-self: stretch;
+
+	margin-top: 2rem;
 }
 
 .hero_text1 {
@@ -87,6 +93,8 @@
 	align-items: center;
 
 	width: 100%;
+
+	margin-bottom: 2rem;
 }
 
 .circle_thing {
@@ -103,14 +111,16 @@
 	display: flex;
 	flex-direction: column;
 
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
 
 	height: 100%;
-	width: 100%;
+	width: 70vw;
 
 	/* padding-left: 12rem;
 	padding-right: 12rem; */
+
+	background-color: #fff;
 }
 
 .login_stuff {
@@ -208,7 +218,7 @@
 .forgotPassword:hover {
 	color: var(--forget-green2);
 	text-align: right;
-	font-family: Quicksand;
+	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.875rem;
 	font-style: normal;
 	font-weight: 500;
@@ -218,7 +228,7 @@
 .forgotPassword:active {
 	color: var(--forget-green3);
 	text-align: right;
-	font-family: Quicksand;
+	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.875rem;
 	font-style: normal;
 	font-weight: 500;

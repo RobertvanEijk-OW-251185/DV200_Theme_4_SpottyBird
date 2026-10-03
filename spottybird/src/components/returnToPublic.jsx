@@ -7,13 +7,15 @@ import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 
 function ReturnToPublic() {
 	return (
-		<button className="return_to_public_container">
+		<a
+			className="return_to_public_container"
+			href="https://www.spottybirdwrc.org.za/">
 			<div className="return_public">
 				<FontAwesomeIcon icon={faGlobe} />
 				<h3 className="return_to_public_text">Return To Public</h3>
 			</div>
 			<FontAwesomeIcon icon={faChevronRight} />
-		</button>
+		</a>
 	);
 }
 
