@@ -16,7 +16,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
+// Browser Router Imports
+import { useNavigate } from "react-router-dom";
+
 function LogInPage() {
+	const navigate = useNavigate();
+
 	return (
 		<div className="login_body">
 			<div className="hero_image">
@@ -89,7 +94,11 @@ function LogInPage() {
 					</div>
 					<div className="login_redirect_buttons">
 						{/* login component */}
-						<button className="login_btn" id="loginBtn">
+						<button
+							className="login_btn"
+							id="loginBtn"
+							onClick={() => navigate("/main")}>
+							{/* Need add google account login ability */}
 							<FontAwesomeIcon icon={faLock} />
 							<h2>Log In</h2>
 						</button>
