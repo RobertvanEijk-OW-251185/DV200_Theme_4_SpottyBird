@@ -15,6 +15,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Navbar() {
+	const handleOpenWhatsApp = () => {
+		window.open(
+			"https://web.whatsapp.com/send",
+			"_blank",
+			"noopener, noreferrer",
+		);
+	};
+
 	return (
 		<>
 			<nav className="custom_navbar_container">
@@ -52,7 +60,7 @@ function Navbar() {
 				<div className="whatsapp_redirect">
 					<div className="whatsapp_image"></div>
 					<p className="whatsappText">WhatsApp</p>
-					<button className="whatsapp_btn">
+					<button className="whatsapp_btn" onClick={handleOpenWhatsApp}>
 						<p className="whatsappText">Open Whatsapp</p>
 						<FontAwesomeIcon icon={faUpRightFromSquare} />
 					</button>
