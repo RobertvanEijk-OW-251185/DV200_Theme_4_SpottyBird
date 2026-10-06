@@ -1,7 +1,6 @@
 // CSS Import
 import "../componentStyling/pageHeader.css";
 
-// Fontawesome icons import
 // Import fontawesome icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

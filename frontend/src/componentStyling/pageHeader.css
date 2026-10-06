@@ -20,7 +20,7 @@ p {
 	width: 40.75rem;
 	flex-direction: column;
 	align-items: flex-start;
-	/* gap: 0.4375rem !important; */
+	gap: 0.4375rem;
 }
 
 .page_back {

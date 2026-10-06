@@ -2,15 +2,21 @@
 .admissions_forms {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
+	/* flex: 1 1 0; */
+	min-height: 0;
 	gap: 1.5rem;
 	/* flex: 1 0 0; */
 
-	width: 100% !important;
+	width: 100%;
 
-	/* overflow-y: scroll; */
+	overflow-y: scroll;
 }
+
+/* .admissions_forms > * {
+	flex-shrink: 0;
+} */
 
 /* Container to view all the admission drafts/incomplete forms */
 .drafts_button_container {
@@ -19,9 +25,12 @@
 	justify-content: space-between;
 	align-items: center;
 
-	width: calc(100% - 4rem);
+	/* width: calc(100% - 4rem); */
 	/* width: 89.125rem; */
 	/* height: 9.375rem; */
+
+	width: 100%;
+	box-sizing: border-box;
 
 	gap: 0.5rem;
 	padding: 1.5rem 2rem;
@@ -59,9 +68,214 @@
 }
 
 /* New Case Intake progress display */
-/* .intake_details_container {
-} */
+.intake_details_container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	/* width: calc(100% - 4rem); */
+
+	width: 100%;
+	box-sizing: border-box;
+
+	gap: 0.5rem;
+	padding: 1.5rem 2rem;
+
+	border-radius: 1rem;
+	border: 1px solid #d1dbd4;
+	background: #fff;
+}
+
+.new_case_intake_info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+
+	/* width: 100%; */
+}
+
+.new_case_intake_progress_markers {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+
+	width: 100%;
+
+	gap: 0.5rem;
+}
+
+.progress_1,
+.progress_2,
+.progress_3,
+.progress_4 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	/* width: 100%; */
+
+	border-radius: 2rem;
+	border: 1px solid #c2d4c7;
+	/* background: #fff; */
+
+	padding: 0.5rem 1.5rem;
+	gap: 0.5rem;
+}
+
+.progress_complete {
+	border: 1px solid #0a802e;
+	background: #ebf7ed;
+
+	color: #0a802e !important;
+}
 
 /* Admission forms styling */
-/* .form_container {
-} */
+.form_container {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	flex-wrap: wrap;
+
+	width: 100%;
+	box-sizing: border-box;
+	/* max-height: 65%; */
+	/* height: fit-content; */
+
+	gap: 0.5rem;
+	padding: 1.5rem 2rem;
+
+	border-radius: 1rem;
+	border: 1px solid #d1dbd4;
+	background: #fff;
+}
+
+.release_date_form_container,
+.finder_report_details_form_container,
+.case_classification_form_container,
+.incident_location_form_container,
+.clinical_condition_form_container,
+.care_actions_tasks_form_container,
+.assignment_consent_release_form_container {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	/* justify-content: center; */
+	align-items: flex-start;
+
+	flex: 1 1 calc(50% - 0.25rem);
+	min-width: min(100%, 10rem);
+	box-sizing: border-box;
+
+	padding: 1rem 1.5rem;
+
+	gap: 0.5rem;
+
+	border-radius: 0.375rem;
+	border: 1px solid #d1dbd4;
+	background: #fff;
+	/* background: #ca8888; */
+}
+
+.form_container_content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	width: 100%;
+
+	gap: 0.75rem;
+}
+
+.form_container_content_pills {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-start;
+
+	width: 100%;
+
+	gap: 0.75rem;
+}
+
+.admission_form_divider {
+	display: flex;
+
+	width: 100%;
+	height: 0.1rem;
+
+	box-sizing: border-box;
+	border-radius: 1rem;
+
+	border: 2px solid #c7d4cc;
+
+	/* background: #c7d4cc; */
+}
+
+.view_map {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	min-width: 10rem;
+	padding: 0.4rem;
+
+	margin-top: 1rem;
+
+	border-radius: 0.375rem;
+	border: 1px solid #0a802e;
+	background: #fff;
+
+	color: #0a802e;
+}
+
+.view_map:hover {
+	border: 1px solid #0a802e;
+	background: #0a802d5e;
+
+	color: #0a802e;
+}
+
+.view_map:active {
+	border-radius: 0.375rem;
+	border: 1px solid #fff;
+	background: #0a802e;
+
+	color: #fff;
+}
+
+.pills {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	width: 100%;
+
+	gap: 0.75rem;
+}
+
+.upload_images {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
+	height: 100%;
+
+	gap: 2rem;
+
+	border-radius: 0.5rem;
+	border: 2px solid #c7d4cc;
+	background: #f6faf7;
+}
+
+.uploadIcon {
+	width: 3rem;
+	height: 3rem;
+
+	color: #0a802e;
+}
