@@ -1,0 +1,17 @@
+.main_content {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+
+	width: calc(100% - 1.375rem);
+	height: calc(100vh - 0.65625rem);
+
+	margin-right: 1.375rem !important;
+	margin-top: calc(0.65625rem / 2);
+	margin-bottom: calc(0.65625rem / 2);
+
+	gap: 1.5rem;
+
+	/* background-color: aqua; */
+}
