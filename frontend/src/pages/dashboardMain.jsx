@@ -5,6 +5,7 @@ import "../pagesStyling/Main.css";
 // Component Import
 import PageHeaderComponent from "../components/pagesHeader";
 import OverviewCardComponent from "../components/mdOverviewCards";
+import BarChartCardModuleComponent from "../components/mdBarChartCard";
 
 // Import fontawesome icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -46,17 +47,22 @@ function MainDash() {
 					numb="18"
 					extraInfo="+5 This Week"
 				/>
-				<div className="grid_module_test5">
+				<BarChartCardModuleComponent
+					className="grid_module_test5"
+					title="Cases by workflow stage"
+					subtitle="Current distribution across the case lifecycle"
+				/>
+				{/* <div className="grid_module_test5">
 					<p>hi</p>
-				</div>
+				</div> */}
 				<div className="grid_module_test6">
-					<p>hi</p>
+					<p>Doughnut Chart</p>
 				</div>
 				<div className="grid_module_test7">
-					<p>hi</p>
+					<p>Line Graph</p>
 				</div>
 				<div className="grid_module_test8">
-					<p>hi</p>
+					<p>Horisontal Bar type thingy </p>
 				</div>
 			</div>
 		</div>

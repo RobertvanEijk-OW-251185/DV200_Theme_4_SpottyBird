@@ -1,0 +1,53 @@
+.overview_card {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	/* width: 21.75rem; */
+	width: 100%;
+	/* height: 9.1875rem; */
+	height: 100%;
+
+	gap: 1rem;
+	/* padding: 3rem 2rem; */
+
+	border-radius: 0.375rem;
+	border: 1px solid #e0e0dc;
+	background: #fff;
+}
+
+.chart_titles {
+}
+
+.bar_chart_card {
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+	padding: 1rem;
+	min-height: 16rem;
+	box-sizing: border-box;
+}
+
+.bar_chart_title {
+	margin: 0 0 0.75rem;
+	font-size: 1rem;
+}
+
+.bar_chart_subtitle {
+}
+
+.bar_chart_canvas {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* padding-left: 2rem;
+	padding-right: 2rem; */
+
+	margin-left: auto;
+	margin-right: auto;
+
+	/* position: relative; */
+	flex: 1;
+	min-height: 0;
+	width: 90%;
+}
