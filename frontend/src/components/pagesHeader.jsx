@@ -9,15 +9,15 @@ import {
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-function PageHeaderComponent() {
+function PageHeaderComponent({ title, description, prevPage }) {
 	return (
 		<div className="page_title_container">
 			<div className="page_title_block">
-				<h3>Page Title</h3>
-				<p>Page functional description</p>
+				<h3>{title}</h3>
+				<p>{description}</p>
 				<div className="page_back">
 					<FontAwesomeIcon icon={faChevronLeft} />
-					<p>Back To ____</p>
+					<p>Back To {prevPage}</p>
 				</div>
 			</div>
 			<div className="user_container">

@@ -7,7 +7,11 @@ import PageHeaderComponent from "../components/pagesHeader";
 function Rehabilitation() {
 	return (
 		<div className="main_content">
-			<PageHeaderComponent />
+			<PageHeaderComponent
+				title="Rehabilitation"
+				description="Case identification numbers , locations status and priorities all in one place"
+				prevPage=""
+			/>
 		</div>
 	);
 }

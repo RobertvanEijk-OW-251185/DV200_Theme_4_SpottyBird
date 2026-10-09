@@ -19,7 +19,10 @@ import {
 function Admissions() {
 	return (
 		<div className="main_content">
-			<PageHeaderComponent />
+			<PageHeaderComponent
+				title="Admission"
+				description="Case identification numbers , locations status and priorities all in one place"
+			/>
 			<div className="admissions_forms">
 				<div className="drafts_button_container">
 					<div className="left_information">
