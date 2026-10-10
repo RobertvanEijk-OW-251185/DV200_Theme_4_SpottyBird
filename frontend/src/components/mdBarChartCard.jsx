@@ -31,6 +31,7 @@ function BarChartCardModuleComponent({
 	subtitle = "",
 	labels = DEFAULT_LABELS,
 	values = DEFAULT_VALUES,
+	colors = [],
 }) {
 	const canvasRef = useRef(null);
 
@@ -45,7 +46,11 @@ function BarChartCardModuleComponent({
 					{
 						label: title,
 						data: values,
-						backgroundColor: "#80a74b",
+						backgroundColor: values.map(
+							(_, index) =>
+								colors[index] ??
+								`hsl(${(index * 360) / values.length}, 65%, 45%)`,
+						),
 						borderRadius: 4,
 						maxBarThickness: 80,
 					},
@@ -67,7 +72,7 @@ function BarChartCardModuleComponent({
 		});
 
 		return () => chart.destroy();
-	}, [labels, title, values]);
+	}, [colors, labels, title, values]);
 
 	return (
 		<div className={`overview_card bar_chart_card ${className}`}>
