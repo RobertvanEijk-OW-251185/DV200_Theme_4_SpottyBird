@@ -78,6 +78,7 @@ const caseSchema = new mongoose.Schema(
 		releasePlan: { plannedDate: Date, reviewTime: String, location: String },
 		outcome: { type: String, date: Date },
 		admissionNotes: String,
+		careTasks: String,
 		admittedAt: Date,
 		lastSavedAt: Date,
 	},
@@ -87,6 +88,6 @@ const caseSchema = new mongoose.Schema(
 caseSchema.index({ status: 1, updatedAt: -1 });
 caseSchema.index({ "animal.type": 1, status: 1 });
 
-const Case = mongoose.modal("Case", caseSchema);
+const Case = mongoose.model("Case", caseSchema);
 
 export default Case;

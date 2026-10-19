@@ -3,6 +3,9 @@ import "../componentStyling/admissionFormInputs.css";
 function AdmissionFormTextInputComponent({
 	title = "Title",
 	placeholder = "",
+	name,
+	type = "text",
+	required = false,
 }) {
 	return (
 		<div className="ad_form_input">
@@ -11,8 +14,11 @@ function AdmissionFormTextInputComponent({
 			</div>
 			<input
 				className="ad_form_input_self"
-				type="text"
+				name={name}
+				type={type}
 				placeholder={placeholder}
+				required={required}
+				step={type === "number" ? "any" : undefined}
 			/>
 		</div>
 	);

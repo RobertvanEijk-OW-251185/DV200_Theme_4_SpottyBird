@@ -274,6 +274,40 @@
 	background: #f6faf7;
 }
 
+.admission_submit_actions {
+	display: flex;
+	flex: 1 0 100%;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 1rem;
+}
+
+.admission_submit_button {
+	padding: 0.75rem 1.5rem;
+	border: 1px solid #0a802e;
+	border-radius: 0.5rem;
+	background: #0a802e;
+	color: #fff;
+	cursor: pointer;
+}
+
+.admission_submit_button:disabled {
+	cursor: wait;
+	opacity: 0.7;
+}
+
+.admission_feedback {
+	margin-right: auto;
+}
+
+.admission_feedback_success {
+	color: #0a802e;
+}
+
+.admission_feedback_error {
+	color: #b42318;
+}
+
 .uploadIcon {
 	width: 3rem;
 	height: 3rem;
