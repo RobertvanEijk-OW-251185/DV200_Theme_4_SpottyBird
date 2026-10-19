@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import caseRoutes from "./routes/caseRoutes.js";
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.use("/api/cases", caseRoutes);
 app.get("/api/health", (req, res) => {
 	res.json({ message: "SpottyBird API is running!!" });
 });
+
+app.use("/api/users", authRoutes);
 
 const startServer = async () => {
 	await connectDB();
