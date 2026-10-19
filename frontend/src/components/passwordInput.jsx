@@ -3,17 +3,22 @@ import "../componentStyling/textFieldInput.css";
 
 // Other Imports
 
-function PasswordInput() {
+function PasswordInput({ value, onChange }) {
 	return (
 		<div className="textFieldInputComponent">
 			<h3 className="textInputFormTitle">Enter Password</h3>
-			<form className="TextInputFormSelf">
+			<div className="TextInputFormSelf">
 				<input
 					className="textInputFormText"
-					type="text"
+					type="password"
+					name="password"
+					autoComplete="current-password"
+					required
 					placeholder="Enter your password..."
+					value={value}
+					onChange={onChange}
 				/>
-			</form>
+			</div>
 		</div>
 	);
 }

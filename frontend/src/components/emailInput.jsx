@@ -3,17 +3,22 @@ import "../componentStyling/textFieldInput.css";
 
 // Other Imports
 
-function EmailInput() {
+function EmailInput({ value, onChange }) {
 	return (
 		<div className="textFieldInputComponent">
 			<h3 className="textInputFormTitle">Enter Email</h3>
-			<form className="TextInputFormSelf">
+			<div className="TextInputFormSelf">
 				<input
 					className="textInputFormText"
-					type="text"
+					type="email"
+					name="email"
+					autoComplete="username"
+					required
 					placeholder="Enter your email..."
+					value={value}
+					onChange={onChange}
 				/>
-			</form>
+			</div>
 		</div>
 	);
 }
