@@ -15,12 +15,43 @@ import {
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { useState } from "react";
 
 // Browser Router Imports
 import { useNavigate } from "react-router-dom";
 
 function LogInPage() {
 	const navigate = useNavigate();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const handleLogin = async (event) => {
+		event.preventDefault();
+		setError("");
+		setIsSubmitting(true);
+
+		try {
+			const response = await fetch("/api/users/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.message || "Unable to log in");
+			}
+
+			localStorage.setItem("authToken", data.token);
+			navigate("/main");
+		} catch (loginError) {
+			setError(loginError.message || "Unable to connect. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	return (
 		<div className="login_body">
@@ -67,48 +98,60 @@ function LogInPage() {
 							</p>
 						</div>
 					</div>
-					<div className="login_field">
-						{/* input field 1: Email Component*/}
-						<EmailInput></EmailInput>
-						{/* input field 2: Password Component*/}
-						<PasswordInput></PasswordInput>
-						<div className="forgor_password">
-							<a className="forgotPassword" rel="stylesheet" href="">
-								Forgot password?
-							</a>
+					<form className="login_form" onSubmit={handleLogin}>
+						<div className="login_field">
+							<EmailInput
+								value={email}
+								onChange={(event) => setEmail(event.target.value)}
+							/>
+							<PasswordInput
+								value={password}
+								onChange={(event) => setPassword(event.target.value)}
+							/>
+							<div className="forgor_password">
+								<a className="forgotPassword" rel="stylesheet" href="">
+									Forgot password?
+								</a>
+							</div>
 						</div>
-					</div>
-					<div className="user_info">
-						<FontAwesomeIcon
-							className="user_shield_icon1"
-							icon={faUserShield}
-						/>
-						<div className="user_info2">
-							<p className="info_users_bold">
-								For staff, interns, admins, and volunteers only.
+						{error && (
+							<p className="login_error" role="alert">
+								{error}
 							</p>
-							<p className="info_users">
-								Use your organisation email to sign in.
-							</p>
+						)}
+						<div className="user_info">
+							<FontAwesomeIcon
+								className="user_shield_icon1"
+								icon={faUserShield}
+							/>
+							<div className="user_info2">
+								<p className="info_users_bold">
+									For staff, interns, admins, and volunteers only.
+								</p>
+								<p className="info_users">
+									Use your organisation email to sign in.
+								</p>
+							</div>
 						</div>
-					</div>
+						<div className="login_redirect_buttons">
+							<button
+								className="login_btn"
+								id="loginBtn"
+								type="submit"
+								disabled={isSubmitting}>
+								<FontAwesomeIcon icon={faLock} />
+								<h2>{isSubmitting ? "Logging in..." : "Log In"}</h2>
+							</button>
+						</div>
+					</form>
 					<div className="login_redirect_buttons">
-						{/* login component */}
-						<button
-							className="login_btn"
-							id="loginBtn"
-							onClick={() => navigate("/main")}>
-							{/* Need add google account login ability */}
-							<FontAwesomeIcon icon={faLock} />
-							<h2>Log In</h2>
-						</button>
 						<div className="divide_line_or">
 							<div className="divide_line"></div>
 							<p>or</p>
 							<div className="divide_line"></div>
 						</div>
 						{/* Report on whatsapp component */}
-						<button className="report_whatsapp_redirect">
+						<button className="report_whatsapp_redirect" type="button">
 							<FontAwesomeIcon
 								className="whatsapp_icon_login"
 								icon={faWhatsapp}

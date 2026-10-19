@@ -2,7 +2,7 @@ import "../componentStyling/admissionFormInputs.css";
 
 function AdmissionFormPillSelectComponent({ title = "Title" }) {
 	return (
-		<button className="ad_form_pill_select">
+		<button className="ad_form_pill_select" type="button">
 			<p className="ad_form_pill_select_title">{title}</p>
 		</button>
 	);

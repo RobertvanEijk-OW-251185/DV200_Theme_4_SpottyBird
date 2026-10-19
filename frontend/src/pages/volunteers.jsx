@@ -7,7 +7,11 @@ import PageHeaderComponent from "../components/pagesHeader";
 function Volunteers() {
 	return (
 		<div className="main_content">
-			<PageHeaderComponent />
+			<PageHeaderComponent
+				title="Volunteers"
+				description="Admissions, rehabilitation performance and case outcomes at a glance."
+				prevPage=""
+			/>
 		</div>
 	);
 }
