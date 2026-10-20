@@ -46,10 +46,10 @@ function Navbar() {
 							<FontAwesomeIcon icon={faSuitcaseMedical} />
 							<h2>Rehabilitation</h2>
 						</NavLink>
-						<NavLink to="/records" className="navigation_element">
+						{/* <NavLink to="/records" className="navigation_element">
 							<FontAwesomeIcon icon={faFileLines} />
 							<h2>Records</h2>
-						</NavLink>
+						</NavLink> */}
 						<NavLink to="/volunteers" className="navigation_element">
 							<FontAwesomeIcon icon={faUser} />
 							<h2>Volunteers</h2>

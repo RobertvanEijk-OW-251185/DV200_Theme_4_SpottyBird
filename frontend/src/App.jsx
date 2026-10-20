@@ -29,7 +29,7 @@ function AppRoutes() {
 					<Route path="/cases" element={<Cases />} />
 					<Route path="/admissions" element={<Admissions />} />
 					<Route path="/rehabilitation" element={<Rehabilitation />} />
-					<Route path="/records" element={<Records />} />
+					{/* <Route path="/records" element={<Records />} /> */}
 					<Route path="/volunteers" element={<Volunteers />} />
 				</Routes>
 			</main>

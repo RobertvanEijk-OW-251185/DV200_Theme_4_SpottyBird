@@ -1,4 +1,6 @@
 import "../componentStyling/casesList.css";
+import PriorityTag from "./priorityTag";
+import CaseStatusTag from "./caseStatusTag";
 
 const formatLabel = (value) =>
 	typeof value === "string"
@@ -48,10 +50,10 @@ function CasesListComponent({ cases = [], isLoading = false, error = "" }) {
 						Location
 					</th>
 					<th className="table_head_title" scope="col">
-						Status
+						Priority
 					</th>
 					<th className="table_head_title" scope="col">
-						Priority
+						Condition
 					</th>
 					<th className="table_head_title" scope="col">
 						Assigned To
@@ -106,10 +108,10 @@ function CasesListComponent({ cases = [], isLoading = false, error = "" }) {
 									"—"}
 							</td>
 							<td className="table_row_content">
-								{formatLabel(caseRecord.status)}
+								<PriorityTag priority={caseRecord.priority} />
 							</td>
 							<td className="table_row_content">
-								{formatLabel(caseRecord.priority)}
+								<CaseStatusTag status={caseRecord.status} />
 							</td>
 							<td className="assigned_to table_row_content">
 								{getAssignee(caseRecord.assignment)}
@@ -122,14 +124,9 @@ function CasesListComponent({ cases = [], isLoading = false, error = "" }) {
 							</td>
 							<td className="table_row_content">
 								{/* Temp, add button to take to the specific case's page */}
-								{caseRecord.incident?.description ? (
-									<details>
-										<summary>View</summary>
-										{/* <p>{caseRecord.incident.description}</p> */}
-									</details>
-								) : (
-									"—"
-								)}
+								<button id="open_report_btn" className="open_report_btn">
+									Open Report
+								</button>
 							</td>
 						</tr>
 					))}
