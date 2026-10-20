@@ -134,7 +134,7 @@ function Admissions() {
 
 			setFeedback({
 				type: "success",
-				message: `Admission saved to the database. Case ID: ${result._id}`,
+				message: `Admission saved to the database. Case ID: ${result.caseNumber || result._id}`,
 			});
 			form.reset();
 		} catch (error) {
@@ -583,16 +583,14 @@ function Admissions() {
 						{feedback && (
 							<p
 								className={`admission_feedback admission_feedback_${feedback.type}`}
-								role="status"
-							>
+								role="status">
 								{feedback.message}
 							</p>
 						)}
 						<button
 							className="admission_submit_button"
 							type="submit"
-							disabled={isSubmitting}
-						>
+							disabled={isSubmitting}>
 							{isSubmitting ? "Saving..." : "Admit animal"}
 						</button>
 					</div>

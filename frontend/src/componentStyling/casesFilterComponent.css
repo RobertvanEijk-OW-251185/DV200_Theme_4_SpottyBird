@@ -1,0 +1,41 @@
+.cases_filter {
+	display: flex;
+	height: 2.5625rem;
+	width: 50%;
+	/* padding: 0 1.25rem; */
+	justify-content: space-between;
+	align-items: center;
+	/* flex: 1 0 0; */
+
+	/* padding-right: 1rem !important; */
+
+	border-radius: 0.375rem;
+	border: 1px solid #d3d3d3;
+	background: #fff;
+}
+
+.cases_search_wrapper {
+	position: relative;
+	width: 100%;
+	height: 2.625rem;
+}
+
+.cases_search_icon {
+	position: absolute;
+	top: 50%;
+	left: 0.75rem;
+	width: 1rem;
+	height: 1rem;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+
+.cases_search_input {
+	width: 100%;
+	height: 100%;
+	padding: 0 0.75rem 0 2.25rem;
+	box-sizing: border-box;
+	border-radius: 0.375rem;
+	border: 1px solid #e0e0dc;
+	background: #fff;
+}

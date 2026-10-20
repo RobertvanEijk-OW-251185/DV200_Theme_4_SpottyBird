@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const caseSchema = new mongoose.Schema(
 	{
 		caseNumber: { type: String, unique: true, sparse: true },
+		seedKey: { type: String, unique: true, sparse: true, select: false },
 		recordType: { type: String, enum: ["draft", "case"], default: "draft" },
 		completionStatus: {
 			type: String,

@@ -1,8 +1,15 @@
 import Case from "../models/Case.js";
+import { generateCaseNumber } from "../utils/caseNumber.js";
 
 export const getCases = async (req, res) => {
 	try {
-		const cases = await Case.find().sort({ createdAt: -1 }).limit(50);
+		const cases = await Case.find({
+			recordType: "case",
+			completionStatus: "complete",
+		})
+			.populate("assignment.assignedTo", "username email")
+			.sort({ updatedAt: -1 })
+			.limit(50);
 		return res.json(cases);
 	} catch (error) {
 		console.error("Failed to fetch cases:", error);
@@ -33,7 +40,9 @@ export const createCase = async (req, res) => {
 			});
 		}
 
-		const newCase = await Case.create(req.body);
+		const caseNumber =
+			req.body.recordType === "case" ? await generateCaseNumber() : undefined;
+		const newCase = await Case.create({ ...req.body, caseNumber });
 		return res.status(201).json(newCase);
 	} catch (error) {
 		if (error.name === "ValidationError" || error.name === "CastError") {

@@ -133,11 +133,11 @@ h2 {
 
 .whatsapp_redirect {
 	display: flex;
-	padding: 0.6875rem 2rem;
+	padding: 1.5rem 2rem;
 	flex-direction: column;
 	justify-content: space-around;
 	align-items: center;
-	/* gap: 0.9375rem; */
+	gap: 1rem;
 	/* align-self: stretch; */
 
 	width: 80%;
