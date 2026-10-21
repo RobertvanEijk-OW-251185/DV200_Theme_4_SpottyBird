@@ -1,0 +1,181 @@
+/* Rehab Info Icon Modules */
+.rehab_info_modules {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	align-self: stretch;
+
+	gap: 2.5rem;
+}
+
+.module1 {
+	display: flex;
+	width: 100%;
+	height: 9.1875rem;
+	justify-content: center;
+	align-items: center;
+	gap: 2.5rem;
+
+	border-radius: 1.25rem;
+	border: 1px solid #e0e0dc;
+	background: #fff;
+}
+
+/* Rehab List */
+.rehabilitation_list {
+	display: flex;
+	width: 100%;
+	max-width: 96%;
+	/* height: 100%; */
+	max-height: 68%;
+	/* max-height: auto; */
+	padding: 1.75rem;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	/* flex: 1 0 0; */
+
+	border-radius: 1.25rem;
+	border: 1px solid #e0e0dc;
+	background: #fff;
+}
+
+.rehab_list_cards {
+	display: flex;
+	align-items: center;
+	align-content: flex-start;
+	gap: 2.1rem;
+	align-self: stretch;
+	flex-wrap: wrap;
+
+	max-height: 100%;
+
+	overflow-y: scroll;
+}
+
+.rehab_title_search {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	align-self: stretch;
+}
+
+.rehab_search_wrapper {
+	position: relative;
+	width: 100%;
+	max-width: 25.75rem;
+	height: 2.625rem;
+}
+
+.rehab_search_icon {
+	position: absolute;
+	top: 50%;
+	left: 0.75rem;
+	width: 1rem;
+	height: 1rem;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+
+.rehab_search_input {
+	width: 100%;
+	max-width: 25.75rem;
+	height: 100%;
+	padding: 0 0.75rem 0 2.25rem;
+	box-sizing: border-box;
+	border-radius: 0.375rem;
+	border: 1px solid #e0e0dc;
+	background: #fff;
+}
+
+/* Rehab List cards */
+.rehabilitation_list_card {
+	display: flex;
+	width: 18rem;
+	flex-direction: column;
+	align-items: flex-start;
+
+	border-radius: 1rem;
+	border: 1px solid #a9b8a9;
+	background: #fff;
+
+	overflow: hidden;
+}
+
+.case_image {
+	height: 14.54825rem;
+	align-self: stretch;
+	aspect-ratio: 79/71;
+
+	border-radius: 0.1875rem;
+	background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+}
+
+.case_details {
+	display: flex;
+	padding: 0.75rem 1.25rem;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	align-self: stretch;
+}
+
+.case_animal_names {
+	align-self: stretch;
+}
+
+.case_details_information {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+	align-self: stretch;
+}
+
+.rehab_list_title {
+	flex: 1 0 0;
+
+	color: #343434;
+	font-family: "Work Sans";
+	font-size: 0.8125rem;
+	font-style: normal;
+	font-weight: 700;
+}
+
+.rehab_list_info {
+	flex: 1 0 0;
+
+	color: #343434;
+	font-family: "Work Sans";
+	font-size: 0.8125rem;
+	font-style: normal;
+	font-weight: 400;
+}
+
+.open_case_details {
+	display: flex;
+	padding: 0.25rem;
+	justify-content: center;
+	align-items: center;
+	align-self: stretch;
+
+	background-color: #fff;
+	border-radius: 0.375rem;
+	border: 1px solid #bababa;
+
+	color: #076401;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.625rem;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 0.6875rem; /* 110% */
+}
+
+.open_case_details:hover {
+	color: #ffffff;
+	background-color: #076401;
+}
+
+.open_case_details:active {
+	color: #ffffff;
+	background-color: #054e00;
+}
