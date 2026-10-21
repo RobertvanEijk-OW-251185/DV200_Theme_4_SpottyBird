@@ -10,7 +10,7 @@ import MainDash from "./pages/dashboardMain";
 import Cases from "./pages/cases";
 import Admissions from "./pages/admissions";
 import Rehabilitation from "./pages/rehabilitation";
-import Records from "./pages/records";
+import Case from "./pages/caseIndividual";
 import Volunteers from "./pages/volunteers";
 
 // Import Browser Router stuff...
@@ -29,7 +29,7 @@ function AppRoutes() {
 					<Route path="/cases" element={<Cases />} />
 					<Route path="/admissions" element={<Admissions />} />
 					<Route path="/rehabilitation" element={<Rehabilitation />} />
-					{/* <Route path="/records" element={<Records />} /> */}
+					<Route path="/case" element={<Case />} />
 					<Route path="/volunteers" element={<Volunteers />} />
 				</Routes>
 			</main>

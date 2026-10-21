@@ -1,4 +1,5 @@
 import "../componentStyling/casesList.css";
+import { useNavigate } from "react-router-dom";
 import PriorityTag from "./priorityTag";
 import CaseStatusTag from "./caseStatusTag";
 
@@ -36,6 +37,8 @@ const getAssignee = (assignment) => {
 };
 
 function CasesListComponent({ cases = [], isLoading = false, error = "" }) {
+	const navigate = useNavigate();
+
 	return (
 		<table className="cases_table">
 			<thead className="cases_table_head">
@@ -123,8 +126,11 @@ function CasesListComponent({ cases = [], isLoading = false, error = "" }) {
 								{formatLabel(caseRecord.completionStatus)}
 							</td>
 							<td className="table_row_content">
-								{/* Temp, add button to take to the specific case's page */}
-								<button id="open_report_btn" className="open_report_btn">
+								<button
+									id="open_report_btn"
+									className="open_report_btn"
+									type="button"
+									onClick={() => navigate("/case")}>
 									Open Report
 								</button>
 							</td>

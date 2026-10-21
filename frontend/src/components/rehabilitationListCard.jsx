@@ -2,6 +2,9 @@
 import "../pagesStyling/Rehabilitation.css";
 import { ChartColumn } from "lucide-react";
 
+// React import
+import { useNavigate } from "react-router-dom";
+
 function RehabListCard({ caseRecord }) {
 	const formatDate = (value) => {
 		if (!value) return "—";
@@ -24,6 +27,8 @@ function RehabListCard({ caseRecord }) {
 		typeof assignedTo === "string"
 			? assignedTo
 			: assignedTo?.username || assignedTo?.email || "Unassigned";
+
+	const navigate = useNavigate();
 
 	return (
 		<div className="rehabilitation_list_card">
@@ -55,7 +60,11 @@ function RehabListCard({ caseRecord }) {
 					<h3 className="rehab_list_title">Actions:</h3>
 					<p className="rehab_list_info">{caseRecord.careTasks}</p>
 				</div>
-				<button className="open_case_details">
+				<button
+					id="open_case_details"
+					type="button"
+					className="open_case_details"
+					onClick={() => navigate("/case")}>
 					<ChartColumn />
 					Open Case Details
 				</button>
