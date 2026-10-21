@@ -1,37 +1,81 @@
 // CSS Import
 import "../componentStyling/pageHeader.css";
 
-// Import fontawesome icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faChevronDown,
-	faChevronLeft,
-	faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+// Import icons
+import { LogOut } from "lucide-react";
+
+// React imports
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function PageHeaderComponent({ title, description, prevPage }) {
+	const [username, setUsername] = useState("Loading...");
+
+	useEffect(() => {
+		const token = localStorage.getItem("authToken");
+
+		if (!token) {
+			setUsername("Username");
+			return;
+		}
+
+		const fetchCurrentUser = async () => {
+			try {
+				const response = await fetch("/api/users/me", {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error("Unable to fetch the logged in user's username");
+				}
+
+				const user = await response.json();
+				setUsername(user.username || "Username");
+			} catch (error) {
+				console.error("Unable to load the logged in user's username...");
+				setUsername("Username");
+			}
+		};
+
+		fetchCurrentUser();
+	}, []);
+
+	// Logout
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		localStorage.removeItem("authToken");
+		navigate("/", { replace: true });
+	};
+
 	return (
 		<div className="page_title_container">
 			<div className="page_title_block">
 				<h3>{title}</h3>
 				<p>{description}</p>
-				<div className="page_back">
+				{/* <div className="page_back">
 					<FontAwesomeIcon icon={faChevronLeft} />
 					<p>Back To {prevPage}</p>
-				</div>
+				</div> */}
 			</div>
 			<div className="user_container">
-				<div className="notifications"></div>
 				<div className="divider_vertical"></div>
 				<div className="user_account">
-					<div className="user_profile_image"></div>
-					<div className="user_account_info">
-						<h3>Username</h3>
-						<p>User's title</p>
+					<div className="user_profile_image">
+						<h2>{username.charAt(0).toUpperCase()}</h2>
 					</div>
-					<button className="view_user_info_dropdown">
-						<FontAwesomeIcon icon={faChevronRight} />
-						{/* <FontAwesomeIcon icon={faChevronDown} /> */}
+					<div className="user_account_info">
+						<h3>{username}</h3>
+						<p>Developer</p>
+					</div>
+					<button
+						className="user_log_out"
+						type="button"
+						onClick={handleLogout}
+						aria-label="Log Out">
+						<LogOut />
 					</button>
 				</div>
 			</div>
