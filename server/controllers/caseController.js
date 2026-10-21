@@ -6,6 +6,7 @@ export const getCases = async (req, res) => {
 		const cases = await Case.find({
 			recordType: "case",
 			completionStatus: "complete",
+			status: { $in: ["in_care", "release_ready"] },
 		})
 			.populate("assignment.assignedTo", "username email")
 			.sort({ updatedAt: -1 })
@@ -16,6 +17,8 @@ export const getCases = async (req, res) => {
 		return res.status(500).json({ message: "Failed to fetch cases" });
 	}
 };
+
+export const getRehabilitation = getCases;
 
 export const getCaseSummary = async (req, res) => {
 	try {
@@ -40,13 +43,12 @@ export const getCaseSummary = async (req, res) => {
 			],
 		};
 
-		const [inCare, critical, releaseReady, needsUpdating] =
-			await Promise.all([
-				Case.countDocuments({ ...recordFilter, status: "in_care" }),
-				Case.countDocuments({ ...recordFilter, priority: "urgent" }),
-				Case.countDocuments({ ...recordFilter, status: "release_ready" }),
-				Case.countDocuments(needsUpdatingFilter),
-			]);
+		const [inCare, critical, releaseReady, needsUpdating] = await Promise.all([
+			Case.countDocuments({ ...recordFilter, status: "in_care" }),
+			Case.countDocuments({ ...recordFilter, priority: "urgent" }),
+			Case.countDocuments({ ...recordFilter, status: "release_ready" }),
+			Case.countDocuments(needsUpdatingFilter),
+		]);
 
 		return res.json({ inCare, critical, releaseReady, needsUpdating });
 	} catch (error) {

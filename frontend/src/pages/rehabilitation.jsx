@@ -81,6 +81,51 @@ function Rehabilitation() {
 		return () => controller.abort();
 	}, []);
 
+	const [rehabCases, setRehabCases] = useState([]);
+	const [casesLoading, setCasesLoading] = useState(true);
+	const [casesError, setCasesError] = useState("");
+
+	useEffect(() => {
+		const controller = new AbortController();
+
+		const loadRehabCases = async () => {
+			try {
+				const response = await fetch("/api/cases/rehabilitation", {
+					signal: controller.signal,
+				});
+
+				const result = await response.json();
+
+				if (!response.ok) {
+					throw new Error(
+						result.message || `Request failed (${response.status})`,
+					);
+				}
+
+				if (!Array.isArray(result)) {
+					throw new Error(
+						"The server returned an invalid rehabilitation response.",
+					);
+				}
+
+				setRehabCases(result);
+			} catch (rehabFetchErr) {
+				if (rehabFetchErr.name !== "AbortError") {
+					setCasesError(
+						rehabFetchErr.message || "Unable to load rehabilitation cases",
+					);
+				}
+			} finally {
+				if (!controller.signal.aborted) {
+					setCasesLoading(false);
+				}
+			}
+		};
+
+		loadRehabCases();
+		return () => controller.abort();
+	}, []);
+
 	return (
 		<div className="main_content">
 			<PageHeaderComponent
@@ -102,7 +147,11 @@ function Rehabilitation() {
 					{error}
 				</p>
 			)}
-			<RehabilitationComponent />
+			<RehabilitationComponent
+				cases={rehabCases}
+				isLoading={casesLoading}
+				error={casesError}
+			/>
 		</div>
 	);
 }

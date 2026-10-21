@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 // Component Import
 import RehabListCard from "./rehabilitationListCard";
 
-function RehabilitationComponent() {
+function RehabilitationComponent({ cases, isLoading, error }) {
 	return (
 		<div className="rehabilitation_list">
 			<div className="rehab_title_search">
@@ -22,11 +22,16 @@ function RehabilitationComponent() {
 				</div>
 			</div>
 			<div className="rehab_list_cards">
-				<RehabListCard />
-				<RehabListCard />
-				<RehabListCard />
-				<RehabListCard />
-				<RehabListCard />
+				{isLoading && <p>Loading rehabilitation cases...</p>}
+				{!isLoading && error && <p role="alert">{error}</p>}
+				{!isLoading && !error && cases.length === 0 && (
+					<p>No rehabilitation cases found.</p>
+				)}
+				{!isLoading &&
+					!error &&
+					cases.map((caseRecord) => (
+						<RehabListCard key={caseRecord._id} caseRecord={caseRecord} />
+					))}
 			</div>
 		</div>
 	);
