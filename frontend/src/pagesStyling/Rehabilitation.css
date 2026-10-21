@@ -1,24 +1,28 @@
 /* Rehab Info Icon Modules */
 .rehab_info_modules {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	display: grid;
+	width: 100%;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 	align-self: stretch;
 
-	gap: 2.5rem;
+	gap: 1.25rem;
 }
 
-.module1 {
-	display: flex;
-	width: 100%;
-	height: 9.1875rem;
-	justify-content: center;
-	align-items: center;
-	gap: 2.5rem;
+.rehab_summary_error {
+	align-self: flex-start;
+	color: #b42318;
+}
 
-	border-radius: 1.25rem;
-	border: 1px solid #e0e0dc;
-	background: #fff;
+@media (max-width: 1100px) {
+	.rehab_info_modules {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 560px) {
+	.rehab_info_modules {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 /* Rehab List */
@@ -27,7 +31,7 @@
 	width: 100%;
 	max-width: 96%;
 	/* height: 100%; */
-	max-height: 68%;
+	max-height: 67.8%;
 	/* max-height: auto; */
 	padding: 1.75rem;
 	flex-direction: column;

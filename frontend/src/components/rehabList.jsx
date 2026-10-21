@@ -14,11 +14,10 @@ function RehabilitationComponent() {
 					<Search className="rehab_search_icon" color="#6969697a" />
 					<input
 						className="rehab_search_input"
-						name=""
+						name="rehabSearch"
 						type="text"
 						placeholder="Search..."
-						value=""
-						onChange=""
+						defaultValue=""
 					/>
 				</div>
 			</div>

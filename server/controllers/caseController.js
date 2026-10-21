@@ -17,6 +17,44 @@ export const getCases = async (req, res) => {
 	}
 };
 
+export const getCaseSummary = async (req, res) => {
+	try {
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+		const recordFilter = { recordType: "case" };
+		const needsUpdatingFilter = {
+			...recordFilter,
+			$or: [
+				{ updatedAt: { $lt: thirtyDaysAgo } },
+				{ updatedAt: { $in: [null] } },
+				{ "animal.type": { $in: [null, ""] } },
+				{ "animal.species": { $in: [null, ""] } },
+				{ "animal.scientificName": { $in: [null, ""] } },
+				{ "finder.name": { $in: [null, ""] } },
+				{ "finder.phone": { $in: [null, ""] } },
+				{ "finder.reportedAt": { $in: [null, ""] } },
+				{ "incident.address": { $in: [null, ""] } },
+				{ "incident.foundAt": { $in: [null, ""] } },
+				{ "incident.description": { $in: [null, ""] } },
+			],
+		};
+
+		const [inCare, critical, releaseReady, needsUpdating] =
+			await Promise.all([
+				Case.countDocuments({ ...recordFilter, status: "in_care" }),
+				Case.countDocuments({ ...recordFilter, priority: "urgent" }),
+				Case.countDocuments({ ...recordFilter, status: "release_ready" }),
+				Case.countDocuments(needsUpdatingFilter),
+			]);
+
+		return res.json({ inCare, critical, releaseReady, needsUpdating });
+	} catch (error) {
+		console.error("Failed to fetch case summary:", error);
+		return res.status(500).json({ message: "Failed to fetch case summary" });
+	}
+};
+
 export const createCase = async (req, res) => {
 	try {
 		const { animal = {}, finder = {}, incident = {} } = req.body ?? {};

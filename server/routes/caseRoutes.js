@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { createCase, getCases } from "../controllers/caseController.js";
+import {
+	createCase,
+	getCaseSummary,
+	getCases,
+} from "../controllers/caseController.js";
 
 const router = Router();
 
+router.get("/summary", getCaseSummary);
 router.get("/", getCases);
 router.post("/", createCase);
 

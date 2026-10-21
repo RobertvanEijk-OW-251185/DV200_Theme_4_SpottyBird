@@ -1,0 +1,122 @@
+.rehab_info_module {
+	display: flex;
+	width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1.25rem;
+
+	padding: 1rem;
+
+	border-radius: 1.25rem;
+	border: 1px solid #e0e0dc;
+	background: #fff;
+}
+
+.info_module_icon.in_care {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: auto;
+	height: auto;
+
+	padding: 1.5rem;
+
+	border-radius: 100%;
+	background: #ecf6e9;
+	color: #076a00;
+}
+
+.info_module_icon.in_critical {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: auto;
+	height: auto;
+
+	padding: 1.5rem;
+
+	border-radius: 100%;
+	background: #ffeff0;
+	color: #fc1417;
+}
+
+.info_module_icon.release_ready {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: auto;
+	height: auto;
+
+	padding: 1.5rem;
+
+	border-radius: 100%;
+	background: #fef9f6;
+	color: #ff9000;
+}
+
+.info_module_icon.pending_info {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: auto;
+	height: auto;
+
+	padding: 1.5rem;
+
+	border-radius: 100%;
+	background: #fef9f6;
+	color: #ff9000;
+}
+
+.info_module_icon svg {
+	width: 2rem;
+	height: 2rem;
+}
+
+.rehab_info_module_text {
+	min-width: 0;
+}
+
+.rim_title {
+	margin: 0 0 0.5rem;
+	color: #343434;
+	font-family: "Work Sans";
+	font-size: 1.24706rem;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 1.24706rem; /* 100% */
+}
+
+.rim_stat {
+	margin: 0 0 0.5rem;
+	color: #000;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 2.5rem;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.rim_info {
+	margin: 0;
+	color: #bababa;
+	text-align: left;
+	font-family: Quicksand;
+	font-size: 0.83138rem;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 1.24706rem; /* 150% */
+}
+
+@media (max-width: 560px) {
+	.rehab_info_module {
+		gap: 1rem;
+		padding: 0.875rem;
+	}
+}
