@@ -6,6 +6,7 @@
 
 	width: calc(100% - 1.375rem);
 	height: calc(100vh - 0.65625rem);
+	max-height: calc(100vh - 0.65625rem);
 
 	margin-right: 1.375rem !important;
 	margin-top: calc(0.65625rem / 2);

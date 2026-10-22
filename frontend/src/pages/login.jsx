@@ -33,15 +33,41 @@ function LogInPage() {
 		setIsSubmitting(true);
 
 		try {
-			const response = await fetch("/api/users/login", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
-			});
-			const data = await response.json();
+			let response;
+			try {
+				response = await fetch("/api/users/login", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password }),
+				});
+			} catch {
+				throw new Error(
+					"Unable to reach the API server. Start the backend and check its MongoDB connection.",
+				);
+			}
+
+			const responseText = await response.text();
+			let data = {};
+			if (responseText) {
+				try {
+					data = JSON.parse(responseText);
+				} catch {
+					if (response.ok) {
+						throw new Error("The server returned an invalid response.");
+					}
+				}
+			}
 
 			if (!response.ok) {
-				throw new Error(data.message || "Unable to log in");
+				const message =
+					response.status >= 500
+						? "The API server is unavailable. Check that the backend is running and connected to MongoDB."
+						: data.message || "Unable to log in";
+				throw new Error(message);
+			}
+
+			if (!data.token) {
+				throw new Error("The login response did not include an authentication token.");
 			}
 
 			localStorage.setItem("authToken", data.token);

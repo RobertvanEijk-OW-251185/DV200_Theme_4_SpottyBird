@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
 
+const { Schema } = mongoose;
+
 const caseSchema = new mongoose.Schema(
 	{
 		caseNumber: { type: String, unique: true, sparse: true },
+		seedKey: { type: String, unique: true, sparse: true, select: false },
 		recordType: { type: String, enum: ["draft", "case"], default: "draft" },
 		completionStatus: {
 			type: String,
@@ -81,6 +84,16 @@ const caseSchema = new mongoose.Schema(
 		careTasks: String,
 		admittedAt: Date,
 		lastSavedAt: Date,
+		createdBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			default: null,
+		},
+		updatedBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			default: null,
+		},
 	},
 	{ timestamps: true },
 );
