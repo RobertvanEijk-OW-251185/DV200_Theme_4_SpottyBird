@@ -130,7 +130,7 @@ function CasesListComponent({ cases = [], isLoading = false, error = "" }) {
 									id="open_report_btn"
 									className="open_report_btn"
 									type="button"
-									onClick={() => navigate("/case")}>
+									onClick={() => navigate(`/case/${caseRecord._id}`)}>
 									Open Report
 								</button>
 							</td>

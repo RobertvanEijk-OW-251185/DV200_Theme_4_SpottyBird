@@ -88,7 +88,7 @@
 
 .quick_actions {
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: flex-start;
 	gap: 1.25rem;
 
@@ -104,20 +104,23 @@
 
 	width: 100%;
 
-	gap: 2rem;
+	gap: 1rem;
 }
 
-.admit_animal_btn,
-.edit_case_details_btn {
+.qas_btn {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 
 	width: 100%;
-	/* height: ; */
+	/* height: 100%; */
 
-	padding: 1rem;
+	padding: 0.5rem;
 	gap: 0.625rem;
+
+	padding-left: calc(100% / 4.5);
+	/* padding-left: auto; */
+	padding-right: auto;
 
 	background-color: #fff;
 
@@ -131,14 +134,12 @@
 	font-weight: 600;
 }
 
-.admit_animal_btn:hover,
-.edit_case_details_btn:hover {
+.qas_btn:hover {
 	color: #fefefe;
 	background-color: #076301;
 }
 
-.admit_animal_btn:active,
-.edit_case_details_btn:active {
+.qas_btn:active {
 	color: #fefefe;
 	background-color: #054a00;
 }
@@ -194,11 +195,11 @@
 .incident_description {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: flex-start;
 	/* width: 100%; */
 
-	/* gap: 2.5rem; */
+	gap: 0.5rem;
 
 	grid-row: 3 / span 1;
 	grid-column: 1 / span 2;
@@ -207,9 +208,10 @@
 .descriptions {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: flex-start;
 
+	height: 100%;
 	width: 100%;
 
 	gap: 1.5rem;

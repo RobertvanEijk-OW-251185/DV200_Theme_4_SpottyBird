@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Case from "../models/Case.js";
 import { generateCaseNumber } from "../utils/caseNumber.js";
 
@@ -14,6 +15,29 @@ export const getCases = async (req, res) => {
 	} catch (error) {
 		console.error("Failed to fetch cases:", error);
 		return res.status(500).json({ message: "Failed to fetch cases" });
+	}
+};
+
+export const getCaseById = async (req, res) => {
+	try {
+		if (!mongoose.isValidObjectId(req.params.id)) {
+			return res.status(400).json({ message: "Invalid case ID." });
+		}
+
+		const caseRecord = await Case.findOne({
+			_id: req.params.id,
+			recordType: "case",
+			completionStatus: "complete",
+		}).populate("assignment.assignedTo", "username email");
+
+		if (!caseRecord) {
+			return res.status(404).json({ message: "Case not found." });
+		}
+
+		return res.json(caseRecord);
+	} catch (error) {
+		console.error("Failed to fetch case:", error);
+		return res.status(500).json({ message: "Failed to fetch case" });
 	}
 };
 

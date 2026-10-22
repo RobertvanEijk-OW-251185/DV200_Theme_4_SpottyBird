@@ -64,7 +64,7 @@ function RehabListCard({ caseRecord }) {
 					id="open_case_details"
 					type="button"
 					className="open_case_details"
-					onClick={() => navigate("/case")}>
+					onClick={() => navigate(`/case/${caseRecord._id}`)}>
 					<ChartColumn />
 					Open Case Details
 				</button>
