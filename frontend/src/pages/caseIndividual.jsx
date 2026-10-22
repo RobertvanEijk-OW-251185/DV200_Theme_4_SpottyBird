@@ -8,6 +8,9 @@ import { useState } from "react";
 // Component Import
 import PageHeaderComponent from "../components/pagesHeader";
 
+// icon import
+import { Download, Image } from "lucide-react";
+
 function Case() {
 	const [selectedTask, setSelectedTask] = useState("");
 
@@ -160,8 +163,80 @@ function Case() {
 				<div className="module4 individual_case_modules">
 					<h3>Location:</h3>
 				</div>
-				<div className="module5 individual_case_modules">
+				<div className="case_detail_photos individual_case_modules">
 					<h3>Photos:</h3>
+					<div className="photos_container">
+						<div className="photo_download_item">
+							<div className="photo_container_info_left">
+								<div className="photo_icon">
+									<Image color="#b4b4b4" />
+								</div>
+								<div className="photo_text">
+									<p>File Name</p>
+									<p>File Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="photo_download_item">
+							<div className="photo_container_info_left">
+								<div className="photo_icon">
+									<Image color="#b4b4b4" />
+								</div>
+								<div className="photo_text">
+									<p>File Name</p>
+									<p>File Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="photo_download_item">
+							<div className="photo_container_info_left">
+								<div className="photo_icon">
+									<Image color="#b4b4b4" />
+								</div>
+								<div className="photo_text">
+									<p>File Name</p>
+									<p>File Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="photo_download_item">
+							<div className="photo_container_info_left">
+								<div className="photo_icon">
+									<Image color="#b4b4b4" />
+								</div>
+								<div className="photo_text">
+									<p>File Name</p>
+									<p>File Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="photo_download_item">
+							<div className="photo_container_info_left">
+								<div className="photo_icon">
+									<Image color="#b4b4b4" />
+								</div>
+								<div className="photo_text">
+									<p>File Name</p>
+									<p>File Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+					</div>
 				</div>
 				<div className="incident_description individual_case_modules">
 					<h3>Incident Description:</h3>
@@ -284,8 +359,66 @@ function Case() {
 						</div>
 					</form>
 				</div>
-				<div className="module9 individual_case_modules">
+				<div className="case_detail_documents individual_case_modules">
 					<h3>Documentation:</h3>
+					<div className="download_document_container">
+						<div className="document_load">
+							<div className="document_container_left">
+								<div className="pdf_icon">
+									<p>pdf</p>
+								</div>
+								<div className="document_export_info">
+									<p>Document Name</p>
+									<p>Document Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="document_load">
+							<div className="document_container_left">
+								<div className="pdf_icon">
+									<p>pdf</p>
+								</div>
+								<div className="document_export_info">
+									<p>Document Name</p>
+									<p>Document Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="document_load">
+							<div className="document_container_left">
+								<div className="pdf_icon">
+									<p>pdf</p>
+								</div>
+								<div className="document_export_info">
+									<p>Document Name</p>
+									<p>Document Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+						<div className="document_load">
+							<div className="document_container_left">
+								<div className="pdf_icon">
+									<p>pdf</p>
+								</div>
+								<div className="document_export_info">
+									<p>Document Name</p>
+									<p>Document Size</p>
+								</div>
+							</div>
+							<button className="download_documents">
+								<Download />
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
