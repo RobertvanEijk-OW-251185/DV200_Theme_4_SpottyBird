@@ -6,7 +6,6 @@ export const getCases = async (req, res) => {
 		const cases = await Case.find({
 			recordType: "case",
 			completionStatus: "complete",
-			status: { $in: ["in_care", "release_ready"] },
 		})
 			.populate("assignment.assignedTo", "username email")
 			.sort({ updatedAt: -1 })
@@ -18,7 +17,22 @@ export const getCases = async (req, res) => {
 	}
 };
 
-export const getRehabilitation = getCases;
+export const getRehabilitation = async (req, res) => {
+	try {
+		const cases = await Case.find({
+			recordType: "case",
+			completionStatus: "complete",
+			status: { $in: ["in_care", "release_ready"] },
+		})
+			.populate("assignment.assignedTo", "username email")
+			.sort({ updatedAt: -1 })
+			.limit(50);
+		return res.json(cases);
+	} catch (error) {
+		console.error("Failed to fetch cases:", error);
+		return res.status(500).json({ message: "Failed to fetch cases" });
+	}
+};
 
 export const getCaseSummary = async (req, res) => {
 	try {
