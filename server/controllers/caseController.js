@@ -58,6 +58,80 @@ export const getRehabilitation = async (req, res) => {
 	}
 };
 
+const draftFilter = {
+	recordType: "draft",
+	completionStatus: "incomplete",
+};
+
+export const getDraftCount = async (req, res) => {
+	try {
+		const count = await Case.countDocuments(draftFilter);
+		return res.json({ count });
+	} catch (error) {
+		console.error("Failed to fetch draft count: ", error);
+		return res.status(500).json({ message: "Failed to fetch draft count" });
+	}
+};
+
+export const getDrafts = async (req, res) => {
+	try {
+		const drafts = await Case.find(draftFilter).sort({ updatedAt: -1 });
+		return res.json(drafts);
+	} catch (error) {
+		console.error("Failed to fetch admission drafts:", error);
+		return res.status(500).json({ message: "Failed to fetch admission drafts" });
+	}
+};
+
+export const deleteDraft = async (req, res) => {
+	try {
+		if (!mongoose.isValidObjectId(req.params.id)) {
+			return res.status(400).json({ message: "Invalid draft ID." });
+		}
+
+		const draft = await Case.findOneAndDelete({
+			_id: req.params.id,
+			...draftFilter,
+		});
+		if (!draft) {
+			return res.status(404).json({ message: "Draft not found." });
+		}
+
+		const count = await Case.countDocuments(draftFilter);
+		return res.json({ count });
+	} catch (error) {
+		console.error("Failed to delete admission draft:", error);
+		return res.status(500).json({ message: "Failed to delete admission draft" });
+	}
+};
+
+export const createDraft = async (req, res) => {
+	try {
+		const draftData = { ...(req.body ?? {}) };
+		if (draftData.animal?.type === "") {
+			draftData.animal = { ...draftData.animal };
+			delete draftData.animal.type;
+		}
+
+		const draft = await Case.create({
+			...draftData,
+			recordType: "draft",
+			completionStatus: "incomplete",
+			caseNumber: undefined,
+		});
+
+		const count = await Case.countDocuments(draftFilter);
+		return res.status(201).json({ draft, count });
+	} catch (error) {
+		if (error.name === "ValidationError" || error.name === "CaseError") {
+			return res.status(400).json({ message: error.message });
+		}
+
+		console.error("Failed to save admission draft:", error);
+		return res.status(500).json({ message: "Failed to save admission draft" });
+	}
+};
+
 export const getCaseSummary = async (req, res) => {
 	try {
 		const thirtyDaysAgo = new Date();

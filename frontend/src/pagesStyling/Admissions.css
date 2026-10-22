@@ -49,7 +49,7 @@
 	gap: 0.5rem;
 }
 
-.right_btn {
+.view_drafts_btn {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -64,7 +64,15 @@
 
 	border-radius: 0.5rem;
 	border: 1px solid #0a9f00;
-	background: #30a928;
+	background: #0a802e;
+}
+
+.view_drafts_btn:hover {
+	background: #008b2a;
+}
+
+.view_drafts_btn:active {
+	background: #006b20;
 }
 
 /* New Case Intake progress display */
@@ -276,13 +284,21 @@
 
 .admission_submit_actions {
 	display: flex;
+	flex-direction: row-reverse;
 	flex: 1 0 100%;
-	justify-content: flex-end;
+	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
 }
 
-.admission_submit_button {
+.extra_actions_buttons {
+	display: flex;
+	flex-direction: row;
+
+	gap: 2rem;
+}
+
+.submit_button {
 	padding: 0.75rem 1.5rem;
 	border: 1px solid #0a802e;
 	border-radius: 0.5rem;
@@ -291,9 +307,43 @@
 	cursor: pointer;
 }
 
-.admission_submit_button:disabled {
+.submit_button:disabled {
 	cursor: wait;
 	opacity: 0.7;
+}
+
+.submit_button:hover {
+	color: #fff;
+	background: #008b2a;
+}
+
+.submit_button:active {
+	color: #fff;
+	background: #006b20;
+}
+
+.clear_button {
+	padding: 0.75rem 1.5rem;
+	border: 1px solid #0a802e;
+	border-radius: 0.5rem;
+	background: none;
+	color: #30a928;
+	cursor: pointer;
+}
+
+.clear_button:disabled {
+	cursor: wait;
+	opacity: 0.7;
+}
+
+.clear_button:hover {
+	color: #fff;
+	background: #0a802e;
+}
+
+.clear_button:active {
+	color: #fff;
+	background: #006b20;
 }
 
 .admission_feedback {
