@@ -1,29 +1,26 @@
 // CSS Import
 import "../componentStyling/mdOverviewCards.css";
 
-// Import fontawesome icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 function OverviewCardComponent({
 	className = "",
 	iconClassName = "",
 	title,
 	numb,
 	extraInfo,
-	icon = null,
+	icon: Icon = null,
 	iconColor = "#12b507",
 	iconBackgroundColor = "#eff8f1",
 }) {
 	return (
 		<div className={`overview_card ${className}`}>
-			{icon && (
+			{Icon && (
 				<div
 					className={`overview_card_icon ${iconClassName}`}
 					style={{
 						backgroundColor: iconBackgroundColor,
 						color: iconColor,
 					}}>
-					<FontAwesomeIcon className="module_icon" icon={icon} />
+					<Icon className="module_icon" aria-hidden="true" />
 				</div>
 			)}
 			<div className="overview_module_text">
