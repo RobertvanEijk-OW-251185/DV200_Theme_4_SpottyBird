@@ -8,6 +8,10 @@ import AdmissionFormTextInputComponent from "../components/admissionFormTextInpu
 import AdmissionFormDropDownInputComponent from "../components/admissionFormDropDownInput";
 import AdmissionFormTextNotesInputComponent from "../components/admissionFormTextNotesInput";
 import AdmissionFormPillSelectComponent from "../components/admissionFormPillSelector";
+import SavedDraftsPopUp from "../components/savedDraftPopup";
+
+// import React things
+import { useEffect, useRef, useState } from "react";
 
 // Import fontawesome icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,105 +19,290 @@ import {
 	faCheck,
 	faArrowUpFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+
+function buildAdmissionPayload(form, recordType) {
+	const formData = new FormData(form);
+	const value = (name) => String(formData.get(name) ?? "").trim();
+	const numberValue = (name) => {
+		const fieldValue = value(name);
+		return fieldValue ? Number(fieldValue) : undefined;
+	};
+
+	// co-ordinates and validation
+	const coordinatesInput = value("coordinates");
+	const coordinates = coordinatesInput
+		.split(",")
+		.map((coordinate) => Number(coordinate.trim()));
+	const hasCoordinates =
+		coordinates.length === 2 && coordinates.every(Number.isFinite);
+	if (coordinatesInput && !hasCoordinates) {
+		throw new Error("Enter GPS coordinates as latitude, longitude.");
+	}
+
+	const completionStatus = recordType === "draft" ? "incomplete" : "complete";
+
+	const payload = {
+		recordType,
+		completionStatus,
+
+		intakeSource: value("intakeSource") || "public_report",
+		status: value("status") || "new_report",
+		priority: value("priority") || "medium",
+		finder: {
+			name: value("finderName"),
+			phone: value("finderPhone"),
+			email: value("finderEmail"),
+			position: value("finderPosition"),
+			reportedAt: value("reportedAt") || undefined,
+			consentToContact:
+				value("consentToContact") === "yes"
+					? true
+					: value("consentToContact") === "no"
+						? false
+						: undefined,
+		},
+		animal: {
+			type: value("animalType") || undefined,
+			species: value("species"),
+			scientificName: value("scientificName"),
+			lifeStage: value("lifeStage"),
+			sex: value("sex"),
+			microchipId: value("microchipId"),
+		},
+		incident: {
+			address: value("address"),
+			foundAt: value("foundAt") || undefined,
+			weather: value("weather"),
+			...(hasCoordinates
+				? {
+						coordinates: {
+							latitude: coordinates[0],
+							longitude: coordinates[1],
+						},
+					}
+				: {}),
+			description: value("incidentDescription"),
+		},
+		clinical: {
+			weight: {
+				value: numberValue("weight"),
+				unit: value("weightUnit"),
+			},
+			temperatureCelsius: numberValue("temperature"),
+			heartRateBpm: numberValue("heartRate"),
+			arrivalCondition: value("arrivalCondition"),
+			currentCondition: value("currentCondition"),
+			enclosure: value("enclosure"),
+			carrier: value("carrier"),
+		},
+		assignment: {
+			accessLevel: value("accessLevel"),
+			referralRequired:
+				value("referralRequired") === "yes"
+					? true
+					: value("referralRequired") === "no"
+						? false
+						: undefined,
+		},
+		releasePlan: {
+			plannedDate: value("plannedDate") || undefined,
+			reviewTime: value("reviewTime"),
+			location: value("releaseLocation"),
+		},
+		admissionNotes: value("admissionNotes"),
+		careTasks: value("careTasks"),
+	};
+
+	return payload;
+}
+
+function formatDateForInput(value, inputType) {
+	if (!value) return "";
+	if (inputType === "date" && /^\d{4}-\d{2}-\d{2}/.test(value)) {
+		return value.slice(0, 10);
+	}
+
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return "";
+	date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+	return date.toISOString().slice(0, inputType === "date" ? 10 : 16);
+}
 
 function Admissions() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [feedback, setFeedback] = useState(null);
+	const formRef = useRef(null);
+
+	const [draftCount, setDraftCount] = useState(null);
+	const [draftCountError, setDraftCountError] = useState("");
+	const [isDraftPopupOpen, setIsDraftPopupOpen] = useState(false);
+
+	useEffect(() => {
+		const controller = new AbortController();
+
+		const loadDraftCount = async () => {
+			try {
+				const response = await fetch("/api/cases/drafts/count", {
+					signal: controller.signal,
+				});
+				const result = await response.json();
+
+				if (!response.ok) {
+					throw new Error(
+						result.message || `Request failed (${response.status})`,
+					);
+				}
+				if (!Number.isInteger(result.count) || result.count < 0) {
+					throw new Error("The server returned an invalid draft count.");
+				}
+
+				setDraftCount(result.count);
+			} catch (error) {
+				if (error.name !== "AbortError") {
+					setDraftCountError(error.message || "Unable to load draft count.");
+				}
+			}
+		};
+
+		loadDraftCount();
+		return () => controller.abort();
+	}, []);
+
+	const handleClearForm = (event) => {
+		event.currentTarget.form.reset();
+		setFeedback(null);
+	};
+
+	const handleContinueDraft = (draft) => {
+		const form = formRef.current;
+		if (!form) {
+			setFeedback({ type: "error", message: "The admission form is unavailable." });
+			return;
+		}
+
+		const coordinates = draft.incident?.coordinates;
+		const values = {
+			plannedDate: draft.releasePlan?.plannedDate,
+			reviewTime: draft.releasePlan?.reviewTime,
+			releaseLocation: draft.releasePlan?.location,
+			finderName: draft.finder?.name,
+			finderPhone: draft.finder?.phone,
+			finderEmail: draft.finder?.email,
+			finderPosition: draft.finder?.position,
+			reportedAt: draft.finder?.reportedAt,
+			intakeSource: draft.intakeSource,
+			animalType: draft.animal?.type,
+			species: draft.animal?.species,
+			scientificName: draft.animal?.scientificName,
+			lifeStage: draft.animal?.lifeStage,
+			sex: draft.animal?.sex,
+			microchipId: draft.animal?.microchipId,
+			address: draft.incident?.address,
+			foundAt: draft.incident?.foundAt,
+			weather: draft.incident?.weather,
+			coordinates:
+				Number.isFinite(coordinates?.latitude) &&
+				Number.isFinite(coordinates?.longitude)
+					? `${coordinates.latitude}, ${coordinates.longitude}`
+					: "",
+			incidentDescription: draft.incident?.description,
+			weight: draft.clinical?.weight?.value,
+			weightUnit: draft.clinical?.weight?.unit,
+			temperature: draft.clinical?.temperatureCelsius,
+			heartRate: draft.clinical?.heartRateBpm,
+			arrivalCondition: draft.clinical?.arrivalCondition,
+			currentCondition: draft.clinical?.currentCondition,
+			enclosure: draft.clinical?.enclosure,
+			carrier: draft.clinical?.carrier,
+			priority: draft.priority,
+			careTasks: draft.careTasks,
+			status: draft.status,
+			accessLevel: draft.assignment?.accessLevel,
+			referralRequired:
+				draft.assignment?.referralRequired === true
+					? "yes"
+					: draft.assignment?.referralRequired === false
+						? "no"
+						: "",
+			consentToContact:
+				draft.finder?.consentToContact === true
+					? "yes"
+					: draft.finder?.consentToContact === false
+						? "no"
+						: "",
+			admissionNotes: draft.admissionNotes,
+		};
+
+		form.reset();
+		for (const [name, fieldValue] of Object.entries(values)) {
+			const field = form.elements.namedItem(name);
+			if (!field) continue;
+
+			field.value =
+				name === "plannedDate" || name === "reportedAt" || name === "foundAt"
+					? formatDateForInput(fieldValue, field.type)
+					: fieldValue ?? "";
+		}
+
+		setIsDraftPopupOpen(false);
+		setFeedback({
+			type: "success",
+			message: "Draft loaded into the admission form.",
+		});
+	};
+
+	const handleSaveDraft = async (event) => {
+		const form = event.currentTarget.form;
+		let payload;
+
+		try {
+			payload = buildAdmissionPayload(form, "draft");
+		} catch (error) {
+			setFeedback({ type: "error", message: error.message });
+			return;
+		}
+
+		setIsSubmitting(true);
+		setFeedback(null);
+
+		try {
+			const response = await fetch("/api/cases/drafts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+			});
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(
+					result.message || `Request failed (${response.status})`,
+				);
+			}
+
+			setDraftCount(result.count);
+			setDraftCountError("");
+			setFeedback({ type: "success", message: "Draft saved." });
+		} catch (error) {
+			setFeedback({
+				type: "error",
+				message: `Unable to save draft: ${error.message}`,
+			});
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const form = event.currentTarget;
-		const formData = new FormData(form);
-		const value = (name) => String(formData.get(name) ?? "").trim();
-		const numberValue = (name) => {
-			const fieldValue = value(name);
-			return fieldValue ? Number(fieldValue) : undefined;
-		};
-		const coordinatesInput = value("coordinates");
-		const coordinates = coordinatesInput
-			.split(",")
-			.map((coordinate) => Number(coordinate.trim()));
-		const hasCoordinates =
-			coordinates.length === 2 && coordinates.every(Number.isFinite);
-		if (coordinatesInput && !hasCoordinates) {
-			setFeedback({
-				type: "error",
-				message: "Enter GPS coordinates as latitude, longitude.",
-			});
+
+		let payload;
+		try {
+			payload = buildAdmissionPayload(form, "case");
+		} catch (error) {
+			setFeedback({ type: "error", message: error.message });
 			return;
 		}
-
-		const payload = {
-			recordType: "case",
-			completionStatus: "complete",
-			intakeSource: value("intakeSource") || "public_report",
-			status: value("status") || "new_report",
-			priority: value("priority") || "medium",
-			finder: {
-				name: value("finderName"),
-				phone: value("finderPhone"),
-				email: value("finderEmail"),
-				position: value("finderPosition"),
-				reportedAt: value("reportedAt") || undefined,
-				consentToContact:
-					value("consentToContact") === "yes"
-						? true
-						: value("consentToContact") === "no"
-							? false
-							: undefined,
-			},
-			animal: {
-				type: value("animalType"),
-				species: value("species"),
-				scientificName: value("scientificName"),
-				lifeStage: value("lifeStage"),
-				sex: value("sex"),
-				microchipId: value("microchipId"),
-			},
-			incident: {
-				address: value("address"),
-				foundAt: value("foundAt") || undefined,
-				weather: value("weather"),
-				...(hasCoordinates
-					? {
-							coordinates: {
-								latitude: coordinates[0],
-								longitude: coordinates[1],
-							},
-						}
-					: {}),
-				description: value("incidentDescription"),
-			},
-			clinical: {
-				weight: {
-					value: numberValue("weight"),
-					unit: value("weightUnit"),
-				},
-				temperatureCelsius: numberValue("temperature"),
-				heartRateBpm: numberValue("heartRate"),
-				arrivalCondition: value("arrivalCondition"),
-				currentCondition: value("currentCondition"),
-				enclosure: value("enclosure"),
-				carrier: value("carrier"),
-			},
-			assignment: {
-				accessLevel: value("accessLevel"),
-				referralRequired:
-					value("referralRequired") === "yes"
-						? true
-						: value("referralRequired") === "no"
-							? false
-							: undefined,
-			},
-			releasePlan: {
-				plannedDate: value("plannedDate") || undefined,
-				reviewTime: value("reviewTime"),
-				location: value("releaseLocation"),
-			},
-			admissionNotes: value("admissionNotes"),
-			careTasks: value("careTasks"),
-		};
 
 		setIsSubmitting(true);
 		setFeedback(null);
@@ -160,13 +349,27 @@ function Admissions() {
 						<p>
 							Continue incomplete case records without re-entering information.
 						</p>
-						<p>Draft Ammount: ___</p>
+						<p>
+							Draft Amount:{" "}
+							{draftCount ?? (draftCountError ? "Unavailable" : "Loading...")}
+						</p>
+						{draftCountError && <p role="status">{draftCountError}</p>}
 					</div>
-					<button className="right_btn">
+					<button
+						className="view_drafts_btn"
+						type="button"
+						onClick={() => setIsDraftPopupOpen(true)}>
 						<h2>View Drafts</h2>
 					</button>
 				</div>
-				<div className="intake_details_container">
+				{isDraftPopupOpen && (
+					<SavedDraftsPopUp
+						onClose={() => setIsDraftPopupOpen(false)}
+						onContinue={handleContinueDraft}
+						onCountChange={setDraftCount}
+					/>
+				)}
+				{/* <div className="intake_details_container">
 					<div className="new_case_intake_info">
 						<h3>New Case Intake</h3>
 						<p>
@@ -180,20 +383,23 @@ function Admissions() {
 							<p>1 Intake Source</p>
 						</div>
 						<div className="progress_2">
-							{/* <FontAwesomeIcon icon={faCheck} /> */}
+					
 							<p>2 Case Details</p>
 						</div>
 						<div className="progress_3">
-							{/* <FontAwesomeIcon icon={faCheck} /> */}
+					
 							<p>3 Clinical Intake</p>
 						</div>
 						<div className="progress_4">
-							{/* <FontAwesomeIcon icon={faCheck} /> */}
+					
 							<p>4 Release Planning</p>
 						</div>
 					</div>
-				</div>
-				<form className="form_container" onSubmit={handleSubmit}>
+				</div> */}
+				<form
+					ref={formRef}
+					className="form_container"
+					onSubmit={handleSubmit}>
 					<div className="release_date_form_container">
 						<div className="form_container_title_block">
 							<h3>Release Date Block</h3>
@@ -588,11 +794,27 @@ function Admissions() {
 							</p>
 						)}
 						<button
-							className="admission_submit_button"
+							className="admission_submit_button submit_button"
 							type="submit"
 							disabled={isSubmitting}>
-							{isSubmitting ? "Saving..." : "Admit animal"}
+							{isSubmitting ? "Saving..." : "Admit Animal"}
 						</button>
+						<div className="extra_actions_buttons">
+							<button
+								className="clear_form_btn clear_button"
+								type="button"
+								onClick={handleClearForm}
+								disabled={isSubmitting}>
+								Clear Form
+							</button>
+							<button
+								className="save_draft_btn submit_button"
+								type="button"
+								onClick={handleSaveDraft}
+								disabled={isSubmitting}>
+								{isSubmitting ? "Saving..." : "Save Draft"}
+							</button>
+						</div>
 					</div>
 				</form>
 			</div>

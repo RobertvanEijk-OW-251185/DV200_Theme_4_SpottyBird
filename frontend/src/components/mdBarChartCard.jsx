@@ -29,14 +29,16 @@ function BarChartCardModuleComponent({
 	className = "",
 	title = "",
 	subtitle = "",
-	labels = DEFAULT_LABELS,
-	values = DEFAULT_VALUES,
+	labels = [],
+	values = [],
 	colors = [],
+	isLoading = false,
+	error = "",
 }) {
 	const canvasRef = useRef(null);
 
 	useEffect(() => {
-		if (!canvasRef.current) return;
+		if (isLoading || error || !canvasRef.current) return;
 
 		const chart = new Chart(canvasRef.current, {
 			type: "bar",
@@ -72,7 +74,7 @@ function BarChartCardModuleComponent({
 		});
 
 		return () => chart.destroy();
-	}, [colors, labels, title, values]);
+	}, [colors, error, isLoading, labels, title, values]);
 
 	return (
 		<div className={`overview_card bar_chart_card ${className}`}>
@@ -81,7 +83,17 @@ function BarChartCardModuleComponent({
 				<p className="bar_chart_subtitle">{subtitle}</p>
 			</div>
 			<div className="bar_chart_canvas">
-				<canvas ref={canvasRef} role="img" aria-label={`${title} bar chart`} />
+				{isLoading ? (
+					<p>Loading workflow stages...</p>
+				) : error ? (
+					<p role="alert">{error}</p>
+				) : (
+					<canvas
+						ref={canvasRef}
+						role="img"
+						aria-label={`${title} bar chart`}
+					/>
+				)}
 			</div>
 		</div>
 	);
