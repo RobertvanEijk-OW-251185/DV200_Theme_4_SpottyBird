@@ -68,13 +68,62 @@
 	color: #0513af;
 }
 
+/* Calendar */
 .volunteer_calendar {
 	grid-row: 2 / span 6;
 	grid-column: 1 / span 3;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+
+	padding: 2rem;
+	gap: 2.5rem;
 }
 
-/* Calendar */
-/*  */
+.shift_calendar_actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	align-self: stretch;
+}
+
+.calendar_filtering {
+	display: flex;
+	align-items: center;
+	gap: 0.5625rem;
+}
+
+.month_filter,
+.week_filter {
+	display: flex;
+	width: 9.125rem;
+	height: 2.5rem;
+	padding: 0 0.75rem;
+	justify-content: space-between;
+	align-items: center;
+
+	border-radius: 0.5rem;
+	border: 1px solid #dee3db;
+	background: #fff;
+}
+
+.create_shift_btn {
+	display: flex;
+	width: 10.0625rem;
+	height: 2.6875rem;
+	justify-content: center;
+	align-items: center;
+	gap: 0.625rem;
+
+	border-radius: 0.5625rem;
+	background: #064d25;
+	color: #fff;
+}
+
+.shifts_calendar_container {
+}
 
 /* Contact Book */
 .volunteer_contact_module {

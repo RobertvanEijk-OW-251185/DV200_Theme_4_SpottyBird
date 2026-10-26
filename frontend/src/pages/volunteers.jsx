@@ -248,7 +248,23 @@ function Volunteers() {
 						</div>
 					</div>
 				</div>
-				<div className="volunteer_calendar module_style"></div>
+				<div className="volunteer_calendar module_style">
+					<div className="shift_calendar_actions">
+						<div className="calendar_filtering">
+							<select className="month_filter">
+								<option value="type">Month</option>
+							</select>
+							<select className="week_filter">
+								<option value="type">Week</option>
+							</select>
+						</div>
+						<button className="create_shift_btn">
+							<CirclePlus />
+							<p>Create Shift</p>
+						</button>
+					</div>
+					<div className="shifts_calendar_container"></div>
+				</div>
 			</div>
 		</div>
 	);
