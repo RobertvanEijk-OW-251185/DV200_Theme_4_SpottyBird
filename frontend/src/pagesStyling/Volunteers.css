@@ -79,7 +79,7 @@
 	align-items: center;
 
 	padding: 2rem;
-	gap: 2.5rem;
+	gap: 1rem;
 }
 
 .shift_calendar_actions {
@@ -123,6 +123,20 @@
 }
 
 .shifts_calendar_container {
+	display: flex;
+	padding: 1.25rem;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0.9375rem;
+	align-self: stretch;
+	grid-row: 2 / span 6;
+	grid-column: 1 / span 3;
+	justify-self: stretch;
+
+	border-radius: 0.8125rem;
+	border: 1px solid #dee3db;
+	background: #fff;
 }
 
 /* Contact Book */
@@ -233,6 +247,7 @@
 	/* width: 21.25rem; */
 	width: 100%;
 	gap: 2.25rem;
+	padding-top: 1rem;
 	flex: 1 0 0;
 
 	overflow-y: scroll;
@@ -262,4 +277,21 @@
 
 	border-radius: 10.21875rem;
 	background: rgba(0, 0, 0, 0.05);
+}
+
+.volunteer_status_tag {
+	padding: 0.25rem 0.5rem;
+	border-radius: 999px;
+	background: #e6f4ea;
+	color: #064d25;
+}
+
+.volunteer_status_tag.working {
+	background: #fff3d6;
+	color: #805b00;
+}
+
+.volunteer_status_tag.away {
+	background: #fce8e6;
+	color: #a12622;
 }

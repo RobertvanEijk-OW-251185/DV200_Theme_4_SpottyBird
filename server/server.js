@@ -4,6 +4,8 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import caseRoutes from "./routes/caseRoutes.js";
 import authRoutes from "./routes/auth.js";
+import shiftRoutes from "./routes/shiftRoutes.js";
+import volunteerRoutes from "./routes/volunteerRoutes.js";
 
 dotenv.config();
 
@@ -18,6 +20,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/users", authRoutes);
+
+app.use("/api/shifts", shiftRoutes);
+app.use("/api/volunteers", volunteerRoutes);
 
 const startServer = async () => {
 	await connectDB();
