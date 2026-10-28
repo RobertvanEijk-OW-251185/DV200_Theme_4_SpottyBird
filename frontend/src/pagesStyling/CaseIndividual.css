@@ -37,12 +37,13 @@
 }
 
 .case_animal_image {
+	display: block;
 	width: 16.96831rem;
 	align-self: stretch;
 	aspect-ratio: 79/71;
+	object-fit: cover;
 
 	border-radius: 0.8125rem;
-	/* background: url(<path-to-image>) lightgray 50% / cover no-repeat; */
 	background-color: lightgray;
 }
 
@@ -357,8 +358,10 @@
 
 .download_documents {
 	display: flex;
+	align-items: center;
 
 	color: #c6c6c6;
+	text-decoration: none;
 
 	background-color: #efefef;
 	border-style: none;

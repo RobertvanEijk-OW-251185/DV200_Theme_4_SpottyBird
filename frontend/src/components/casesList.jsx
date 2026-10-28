@@ -31,9 +31,14 @@ const formatAnimal = (animal = {}) => {
 };
 
 const getAssignee = (assignment) => {
-	const assignedTo = assignment?.assignedTo;
+	const assignedTo = assignment?.assignedVolunteer || assignment?.assignedTo;
 	if (typeof assignedTo === "string") return assignedTo;
-	return assignedTo?.username || assignedTo?.email || "Unassigned";
+	return (
+		assignedTo?.name ||
+		assignedTo?.username ||
+		assignedTo?.email ||
+		"Unassigned"
+	);
 };
 
 function CasesListComponent({ cases = [], isLoading = false, error = "" }) {

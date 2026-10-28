@@ -364,3 +364,44 @@
 
 	color: #0a802e;
 }
+.admission_attachment_input {
+	display: none;
+}
+
+.attachment_draft_note {
+	margin-top: 0.5rem;
+	color: #666;
+	font-size: 0.875rem;
+}
+
+.selected_attachments {
+	display: grid;
+	gap: 0.5rem;
+	width: 100%;
+	margin: 0.75rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.selected_attachments li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #e0e0dc;
+	border-radius: 0.375rem;
+	background: #fff;
+}
+
+.selected_attachments li span {
+	overflow-wrap: anywhere;
+}
+
+.selected_attachments li button {
+	flex: 0 0 auto;
+	border: 0;
+	background: transparent;
+	color: #076301;
+	cursor: pointer;
+}

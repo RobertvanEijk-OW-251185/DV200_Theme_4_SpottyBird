@@ -84,7 +84,9 @@ function Cases() {
 		const matchesStatus =
 			!filters.status || caseRecord.status === filters.status;
 
-		const assignedTo = caseRecord.assignment?.assignedTo;
+		const assignedTo =
+			caseRecord.assignment?.assignedVolunteer ||
+			caseRecord.assignment?.assignedTo;
 		const assigneeId =
 			typeof assignedTo === "object" ? assignedTo?._id : assignedTo;
 		const matchesAssignee =
@@ -128,13 +130,18 @@ function Cases() {
 		...new Map(
 			cases
 				.map((caseRecord) => {
-					const assignedTo = caseRecord.assignment?.assignedTo;
+					const assignedTo =
+						caseRecord.assignment?.assignedVolunteer ||
+						caseRecord.assignment?.assignedTo;
 					if (!assignedTo) return null;
 					const value =
 						typeof assignedTo === "object" ? assignedTo._id : assignedTo;
 					const label =
 						typeof assignedTo === "object"
-							? assignedTo.username || assignedTo.email || value
+							? assignedTo.name ||
+								assignedTo.username ||
+								assignedTo.email ||
+								value
 							: assignedTo;
 					return value ? [value, label] : null;
 				})

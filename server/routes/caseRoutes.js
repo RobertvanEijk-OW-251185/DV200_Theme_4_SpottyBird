@@ -5,6 +5,7 @@ import {
 	deleteDraft,
 	getAdmissionsReleases,
 	getCaseById,
+	getCaseFile,
 	getCaseSummary,
 	getCases,
 	getDraftCount,
@@ -13,13 +14,15 @@ import {
 	getActiveSpeciesBreakdown,
 	getAnimalTypeCounts,
 	getWorkflowStageCounts,
+	updateCase,
 } from "../controllers/caseController.js";
+import { parseCaseAttachments } from "../middleware/caseAttachments.js";
 
 const router = Router();
 
 router.get("/summary", getCaseSummary);
 router.get("/", getCases);
-router.post("/", createCase);
+router.post("/", parseCaseAttachments, createCase);
 
 router.get("/rehabilitation", getRehabilitation);
 
@@ -33,6 +36,8 @@ router.get("/species-breakdown", getActiveSpeciesBreakdown);
 router.get("/admissions-releases", getAdmissionsReleases);
 router.get("/workflow-stages", getWorkflowStageCounts);
 
+router.get("/:id/files/:fileId", getCaseFile);
+router.patch("/:id", parseCaseAttachments, updateCase);
 router.get("/:id", getCaseById);
 
 export default router;

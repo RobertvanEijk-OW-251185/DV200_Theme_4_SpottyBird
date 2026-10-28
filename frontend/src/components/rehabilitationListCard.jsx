@@ -22,17 +22,33 @@ function RehabListCard({ caseRecord }) {
 	const formatLabel = (value) =>
 		typeof value === "string" ? value.replaceAll("_", " ") : "—";
 
-	const assignedTo = caseRecord.assignment?.assignedTo;
+	const assignedTo =
+		caseRecord.assignment?.assignedVolunteer ||
+		caseRecord.assignment?.assignedTo;
 	const assignee =
 		typeof assignedTo === "string"
 			? assignedTo
-			: assignedTo?.username || assignedTo?.email || "Unassigned";
+			: assignedTo?.name ||
+				assignedTo?.username ||
+				assignedTo?.email ||
+				"Unassigned";
+	const mainImage = caseRecord.attachments?.find((file) =>
+		file.mimeType?.startsWith("image/"),
+	);
 
 	const navigate = useNavigate();
 
 	return (
 		<div className="rehabilitation_list_card">
-			<div className="case_image"></div>
+			{mainImage ? (
+				<img
+					className="case_image"
+					src={`/api/cases/${caseRecord._id}/files/${encodeURIComponent(mainImage.id)}`}
+					alt={caseRecord.animal?.species || "Animal"}
+				/>
+			) : (
+				<div className="case_image" aria-hidden="true"></div>
+			)}
 			<div className="case_details">
 				<div className="case_animal_names">
 					<h3>{caseRecord.animal?.species || "Unknown Species"}</h3>

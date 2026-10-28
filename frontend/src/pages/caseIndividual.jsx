@@ -4,7 +4,7 @@ import "../pagesStyling/CaseIndividual.css";
 
 // React imports
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Component Import
 import PageHeaderComponent from "../components/pagesHeader";
@@ -46,21 +46,53 @@ const formatDate = (value) => {
 			}).format(date);
 };
 
+const formatFileSize = (size) =>
+	size < 1024 * 1024
+		? `${Math.max(1, Math.round(size / 1024))} KB`
+		: `${(size / (1024 * 1024)).toFixed(1)} MB`;
+
 function Case() {
-	const [selectedTask, setSelectedTask] = useState("");
 	const [caseRecord, setCaseRecord] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isUpdating, setIsUpdating] = useState(false);
+	const [actionFeedback, setActionFeedback] = useState("");
 	const [error, setError] = useState("");
-
-	const handleRadioChange = (event) => {
-		setSelectedTask(event.target.value);
-	};
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-	};
-
 	const { id } = useParams();
+	const navigate = useNavigate();
+	const attachments = caseRecord?.attachments ?? [];
+	const imageAttachments = attachments.filter((file) =>
+		file.mimeType?.startsWith("image/"),
+	);
+	const documentAttachments = attachments.filter(
+		(file) => !file.mimeType?.startsWith("image/"),
+	);
+	const attachmentUrl = (file, download = false) =>
+		`/api/cases/${caseRecord._id}/files/${encodeURIComponent(file.id)}${download ? "?download=1" : ""}`;
+
+	const updateStatus = async (status, successMessage) => {
+		setIsUpdating(true);
+		setActionFeedback("");
+
+		try {
+			const response = await fetch(`/api/cases/${id}`, {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ status }),
+			});
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.message || `Request failed (${response.status}).`);
+			}
+
+			setCaseRecord(result);
+			setActionFeedback(successMessage);
+		} catch (updateError) {
+			setActionFeedback(updateError.message || "Unable to update this case.");
+		} finally {
+			setIsUpdating(false);
+		}
+	};
 
 	useEffect(() => {
 		const controller = new AbortController();
@@ -118,7 +150,15 @@ function Case() {
 			) : (
 				<div className="individual_case_content_grid">
 					<div className="case_info_card individual_case_modules">
-						<div className="case_animal_image"></div>
+						{imageAttachments[0] ? (
+							<img
+								className="case_animal_image"
+								src={attachmentUrl(imageAttachments[0])}
+								alt={caseRecord.animal?.species || "Animal"}
+							/>
+						) : (
+							<div className="case_animal_image" aria-hidden="true"></div>
+						)}
 						<div className="animal_info_text">
 							<h3>{displayValue(caseRecord.caseNumber)}</h3>
 							<div className="priority_tags">
@@ -173,7 +213,11 @@ function Case() {
 									<h3>Assigned To:</h3>
 									<p>
 										{" "}
-										{displayValue(caseRecord.assignment?.assignedTo?.username)}
+										{displayValue(
+											caseRecord.assignment?.assignedVolunteer?.name ||
+												caseRecord.assignment?.assignedTo?.username ||
+												caseRecord.assignment?.assignedTo?.email,
+										)}
 									</p>
 								</div>
 							</div>
@@ -182,23 +226,35 @@ function Case() {
 					<div className="quick_actions individual_case_modules">
 						<h3>Quick Actions:</h3>
 						<div className="quick_actions_buttons">
-							<button className="qas_btn">
+							<button
+								className="qas_btn"
+								type="button"
+								disabled={isUpdating}
+								onClick={() =>
+									updateStatus("release_ready", "Animal marked for release.")
+								}>
 								<Unlink />
-								Mark for Release
+								{isUpdating ? "Updating..." : "Mark for Release"}
 							</button>
-							<button className="qas_btn">
+							<button
+								className="qas_btn"
+								type="button"
+								disabled={isUpdating}
+								onClick={() =>
+									updateStatus("in_care", "Animal marked for rehabilitation.")
+								}>
 								<ShieldPlus />
-								Admit Animal
+								{isUpdating ? "Updating..." : "To Rehab"}
 							</button>
-							<button className="qas_btn">
+							<button
+								className="qas_btn"
+								type="button"
+								onClick={() => navigate(`/admissions?caseId=${id}`)}>
 								<FilePenLine />
 								Edit Case Details
 							</button>
-							<button className="qas_btn">
-								<BriefcasePlus />
-								Assign Worker
-							</button>
 						</div>
+						{actionFeedback && <p role="status">{actionFeedback}</p>}
 					</div>
 					<div className="case_details individual_case_modules">
 						<h3>Case Details:</h3>
@@ -274,76 +330,29 @@ function Case() {
 					<div className="case_detail_photos individual_case_modules">
 						<h3>Photos:</h3>
 						<div className="photos_container">
-							<div className="photo_download_item">
-								<div className="photo_container_info_left">
-									<div className="photo_icon">
-										<Image color="#b4b4b4" />
+							{imageAttachments.length ? (
+								imageAttachments.map((file) => (
+									<div className="photo_download_item" key={file.id}>
+										<div className="photo_container_info_left">
+											<div className="photo_icon">
+												<Image color="#b4b4b4" />
+											</div>
+											<div className="photo_text">
+												<p>{file.originalName}</p>
+												<p>{formatFileSize(file.size)}</p>
+											</div>
+										</div>
+										<a
+											className="download_documents"
+											href={attachmentUrl(file, true)}
+											aria-label={`Download ${file.originalName}`}>
+											<Download />
+										</a>
 									</div>
-									<div className="photo_text">
-										<p>File Name</p>
-										<p>File Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="photo_download_item">
-								<div className="photo_container_info_left">
-									<div className="photo_icon">
-										<Image color="#b4b4b4" />
-									</div>
-									<div className="photo_text">
-										<p>File Name</p>
-										<p>File Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="photo_download_item">
-								<div className="photo_container_info_left">
-									<div className="photo_icon">
-										<Image color="#b4b4b4" />
-									</div>
-									<div className="photo_text">
-										<p>File Name</p>
-										<p>File Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="photo_download_item">
-								<div className="photo_container_info_left">
-									<div className="photo_icon">
-										<Image color="#b4b4b4" />
-									</div>
-									<div className="photo_text">
-										<p>File Name</p>
-										<p>File Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="photo_download_item">
-								<div className="photo_container_info_left">
-									<div className="photo_icon">
-										<Image color="#b4b4b4" />
-									</div>
-									<div className="photo_text">
-										<p>File Name</p>
-										<p>File Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
+								))
+							) : (
+								<p>No photos attached.</p>
+							)}
 						</div>
 					</div>
 					<div className="incident_description individual_case_modules">
@@ -407,7 +416,7 @@ function Case() {
 							</div>
 						</div>
 					</div>
-					<div className="case_actions individual_case_modules">
+					{/* <div className="case_actions individual_case_modules">
 						<h3>Actions Taken:</h3>
 						<form onSubmit={handleSubmit}>
 							<div className="taken_actions_checklist">
@@ -463,66 +472,33 @@ function Case() {
 								</div>
 							</div>
 						</form>
-					</div>
+					</div> */}
 					<div className="case_detail_documents individual_case_modules">
 						<h3>Documentation:</h3>
 						<div className="download_document_container">
-							<div className="document_load">
-								<div className="document_container_left">
-									<div className="pdf_icon">
-										<p>pdf</p>
+							{documentAttachments.length ? (
+								documentAttachments.map((file) => (
+									<div className="document_load" key={file.id}>
+										<div className="document_container_left">
+											<div className="pdf_icon">
+												<p>{file.originalName.split(".").pop()}</p>
+											</div>
+											<div className="document_export_info">
+												<p>{file.originalName}</p>
+												<p>{formatFileSize(file.size)}</p>
+											</div>
+										</div>
+										<a
+											className="download_documents"
+											href={attachmentUrl(file, true)}
+											aria-label={`Download ${file.originalName}`}>
+											<Download />
+										</a>
 									</div>
-									<div className="document_export_info">
-										<p>Document Name</p>
-										<p>Document Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="document_load">
-								<div className="document_container_left">
-									<div className="pdf_icon">
-										<p>pdf</p>
-									</div>
-									<div className="document_export_info">
-										<p>Document Name</p>
-										<p>Document Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="document_load">
-								<div className="document_container_left">
-									<div className="pdf_icon">
-										<p>pdf</p>
-									</div>
-									<div className="document_export_info">
-										<p>Document Name</p>
-										<p>Document Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
-							<div className="document_load">
-								<div className="document_container_left">
-									<div className="pdf_icon">
-										<p>pdf</p>
-									</div>
-									<div className="document_export_info">
-										<p>Document Name</p>
-										<p>Document Size</p>
-									</div>
-								</div>
-								<button className="download_documents">
-									<Download />
-								</button>
-							</div>
+								))
+							) : (
+								<p>No documents attached.</p>
+							)}
 						</div>
 					</div>
 				</div>

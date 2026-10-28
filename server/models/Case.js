@@ -75,6 +75,11 @@ const caseSchema = new mongoose.Schema(
 				ref: "User",
 				default: null,
 			},
+			assignedVolunteer: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Volunteer",
+				default: null,
+			},
 			accessLevel: String,
 			referralRequired: Boolean,
 		},
@@ -82,6 +87,15 @@ const caseSchema = new mongoose.Schema(
 		outcome: { type: String, date: Date },
 		admissionNotes: String,
 		careTasks: String,
+		attachments: [
+			{
+				id: { type: String, required: true },
+				originalName: { type: String, required: true },
+				storedName: { type: String, required: true },
+				mimeType: { type: String, required: true },
+				size: { type: Number, required: true },
+			},
+		],
 		admittedAt: Date,
 		lastSavedAt: Date,
 		createdBy: {
