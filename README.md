@@ -1,16 +1,6 @@
 <!-- REPLACE ALL THE [USERNAME] TEXT WITH YOUR GITHUB PROFILE NAME & THE [PROJECTNAME] WITH THE NAME OF YOUR GITHUB PROJECT -->
 
 <!-- Repository Information & Links-->
-<br />
-
-![GitHub repo size](https://img.shields.io/github/repo-size/username/projectname?color=%000000)
-![GitHub watchers](https://img.shields.io/github/watchers/username/projectname?color=%000000)
-![GitHub language count](https://img.shields.io/github/languages/count/username/projectname?color=%000000)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/username/projectname?color=%000000)
-[![LinkedIn][linkedin-shield]][linkedin-url]
-[![Instagram][instagram-shield]][instagram-url]
-[![Behance][behance-shield]][behance-url]
-
 <!-- HEADER SECTION -->
 <h5 align="center" style="padding:0;margin:0;">Robert van Eijk</h5>
 <h5 align="center" style="padding:0;margin:0;">251185</h5>
@@ -18,8 +8,8 @@
 </br>
 <p align="center">
 
-  <a href="https://github.com/username/projectname">
-    <img src="path/to/logo" alt="Logo" width="140" height="140">
+  <a href="https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird">
+    <img src="frontend/src/assets/readmeImages/Logo.png" alt="Logo" width="400" height="400">
   </a>
   
   <h3 align="center">SpottyBird Wildlife</h3>
@@ -35,37 +25,6 @@
     ·
     <a href="https://github.com/username/projectname/issues">Request Feature</a>
 </p>
-<!-- TABLE OF CONTENTS -->
-## Table of Contents
-
-- [About the Project](#about-the-project)
-  - [Project Description](#project-description)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [How to install](#how-to-install)
-- [Features and Functionality](#features-and-functionality)
-- [Concept Process](#concept-process)
-  - [Ideation](#ideation)
-  - [Wireframes](#wireframes)
-  - [User-flow](#user-flow)
-- [Development Process](#development-process)
-  - [Implementation Process](#implementation-process)
-    - [Highlights](#highlights)
-    - [Challenges](#challenges)
-  - [Reviews and Testing](#peer-reviews)
-    - [Feedback from Reviews](#feedback-from-reviews)
-    - [Unit Tests](#unit-tests)
-  - [Future Implementation](#peer-reviews)
-- [Final Outcome](#final-outcome)
-  - [Mockups](#mockups)
-  - [Video Demonstration](#video-demonstration)
-- [Conclusion](#conclusion)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
 
 <!--PROJECT DESCRIPTION-->
 
@@ -73,17 +32,16 @@
 
 <!-- header image of project -->
 
-![image1][image1]
-
 ### Project Description
 
 A nice introduction to this amazing project of mine.
 
 ### Built With
 
-- [Technology Name](path/to/technology/website)
-- [Technology Name](path/to/technology/website)
-- [Technology Name](path/to/technology/website)
+- [MongoDB]([path/to/technology/website](https://www.mongodb.com/lp/cloud/atlas/try4-reg?utm_source=google&utm_campaign=search_gs_pl_evergreen_mongodb_general_prosp-brand_gic-null_emea-multi_ps-all_desktop_eng_lead&utm_term=mongo%20database&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=23930728972&adgroup=197004289829&cq_cmp=23930728972&gad_source=1&gad_campaignid=23930728972&gbraid=0AAAAADQ1400ViKfN-IryK96sCyKXrTm55&gclid=CjwKCAjwuobXBhBXEiwAYUaIlWOSRExJa29xp56vkX0yrcoATIYnepT9WMXhUyztlnaJjtpgC55ahBoCiXQQAvD_BwE))
+- [Express.Js]([path/to/technology/website](https://expressjs.com/))
+- [React Vite]([path/to/technology/website](https://vite.dev/guide/))
+- [Node.Js]([path/to/technology/website](https://nodejs.org/en))
 
 <!-- GETTING STARTED -->
 <!-- Make sure to add appropriate information about what prerequesite technologies the user would need and also the steps to install your project on their own mashines -->
@@ -132,46 +90,43 @@ Here are a couple of ways to clone this repo:
 
 ## Features and Functionality
 
-![image2][image2]
+![Log In](frontend/src/assets/readmeImages/LogIn.png)
 
 ### Feature 1
 
 Description of Feature
 
-![image3][image3]
+![Main](frontend/src/assets/readmeImages/Main.png)
 
 ### Feature 2
 
 Description of Feature
 
-![image4][image4]
+![Cases](frontend/src/assets/readmeImages/Cases.png)
 
 ### Feature 3
 
 Description of Feature
 
-![image5][image5]
+![Admission](frontend/src/assets/readmeImages/Admissions.png)
 
-<!-- CONCEPT PROCESS -->
-<!-- Briefly explain your concept ideation process -->
+### Feature 4
 
-## Concept Process
+Description of Feature
 
-The `Conceptual Process` is the set of actions, activities and research that was done when starting this project.
+![Rehabilitation](frontend/src/assets/readmeImages/Rehabilitation.png)
 
-### Ideation
+### Feature 5
 
-![image5][image5]
-<br>
-![image6][image6]
+Description of Feature
 
-### Wireframes
+![Volunteer Scheduling](frontend/src/assets/readmeImages/Volunbteers.png)
 
-![image7][image7]
+### Feature 6
 
-### User-flow
+Description of Feature
 
-![image8][image8]
+![Single Case Overview](frontend/src/assets/readmeImages/Case Details.png)
 
 <!-- DEVELOPMENT PROCESS -->
 
@@ -202,40 +157,12 @@ The `Development Process` is the technical implementations and functionality don
 - Bugs.
 - Bugs.
 
-### Reviews & Testing
-
-<!-- stipulate how you've conducted testing in the form of peer reviews, feedback and also functionality testing, like unit tests (if applicable) -->
-
-#### Feedback from Reviews
-
-`Peer Reviews` were conducted by my fellow students and lecturer. The following feedback I found useful:
-
-- Feedback one.
-- Feedback two.
-
-#### Unit Tests
-
-`Unit Tests` were conducted to establish working functionality. Here are all the tests that were ran:
-
-- Test 1 of this functionality
-- Test 2 of this functionality
-
 ### Future Implementation
 
 <!-- stipulate functionality and improvements that can be implemented in the future. -->
 
 - Future 1.
 - Future 2.
-
-<!-- MOCKUPS -->
-
-## Final Outcome
-
-### Mockups
-
-![image9][image9]
-<br>
-![image10][image10]
 
 <!-- VIDEO DEMONSTRATION -->
 
@@ -245,42 +172,17 @@ To see a run through of the application, click below:
 
 [View Demonstration](path/to/video/demonstration)
 
-<!-- ROADMAP -->
-
-## Roadmap
-
-See the [open issues](https://github.com/username/projectname/issues) for a list of proposed features (and known issues).
-
-<!-- CONTRIBUTING -->
-
-## Contributing
-
-Contributions are what makes the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 <!-- AUTHORS -->
 
 ## Authors
 
-- **Your Name & Surname** - [username](https://github.com/username)
+- **Robert van Eijk** - [RobertvanEijk-OW-251185](https://github.com/RobertvanEijk-OW-251185)
 
 <!-- LICENSE -->
 
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.\
-
-<!-- LICENSE -->
-
-## Contact
-
-- **Your Name & Surname** - [email@address](mailto:email@address) - [@instagram_handle](https://www.instagram.com/instagram_handle/)
-- **Project Link** - https://github.com/username/projectname
 
 <!-- ACKNOWLEDGEMENTS -->
 
@@ -294,24 +196,4 @@ Distributed under the MIT License. See `LICENSE` for more information.\
 - [Resource Name](path/to/resource)
 - [Resource Name](path/to/resource)
 
-<!-- MARKDOWN LINKS & IMAGES -->
 
-[image1]: /path/to/image.png
-[image2]: /path/to/image.png
-[image3]: /path/to/image.png
-[image4]: /path/to/image.png
-[image5]: /path/to/image.png
-[image6]: /path/to/image.png
-[image7]: /path/to/image.png
-[image8]: /path/to/image.png
-[image9]: /path/to/image.png
-[image10]: /path/to/image.png
-
-<!-- Refer to https://shields.io/ for more information and options about the shield links at the top of the ReadMe file -->
-
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/nameonlinkedin/
-[instagram-shield]: https://img.shields.io/badge/-Instagram-black.svg?style=flat-square&logo=instagram&colorB=555
-[instagram-url]: https://www.instagram.com/instagram_handle/
-[behance-shield]: https://img.shields.io/badge/-Behance-black.svg?style=flat-square&logo=behance&colorB=555
-[behance-url]: https://www.behance.net/name-on-behance/
