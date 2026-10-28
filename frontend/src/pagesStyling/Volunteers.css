@@ -257,7 +257,7 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	gap: 2rem;
 	align-self: stretch;
 	width: 100%;
@@ -271,6 +271,9 @@
 	justify-content: center;
 	align-items: center;
 
+	max-width: 44px;
+	max-height: 44px;
+
 	flex-shrink: 0;
 	align-self: stretch;
 	aspect-ratio: 1/1;
@@ -279,9 +282,26 @@
 	background: rgba(0, 0, 0, 0.05);
 }
 
+.contact_person_availability {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	/* width: 10rem; */
+}
+
 .volunteer_status_tag {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	align-self: stretch;
+
+	max-width: 4rem;
+
 	padding: 0.25rem 0.5rem;
-	border-radius: 999px;
+	border-radius: 0.5rem;
 	background: #e6f4ea;
 	color: #064d25;
 }

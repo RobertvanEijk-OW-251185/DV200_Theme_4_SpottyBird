@@ -27,6 +27,7 @@ function Volunteers() {
 	const [selectedRole, setSelectedRole] = useState("all");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [isShiftPopupOpen, setIsShiftPopupOpen] = useState(false);
+	const [selectedShift, setSelectedShift] = useState(null);
 	const [weekStart] = useState(() =>
 		startOfWeek(new Date(), { weekStartsOn: 1 }),
 	);
@@ -120,6 +121,14 @@ function Volunteers() {
 		return matchesSearch && matchesRole && matchesStatus;
 	});
 	const statusFilters = ["all", "available", "working", "away"];
+	const handleShiftAssigned = (updatedShift) => {
+		setShifts((currentShifts) =>
+			currentShifts.map((shift) =>
+				shift._id === updatedShift._id ? updatedShift : shift,
+			),
+		);
+		setIsShiftPopupOpen(false);
+	};
 
 	return (
 		<div className="main_content">
@@ -240,7 +249,7 @@ function Volunteers() {
 					</div>
 				</div>
 				<div className="volunteer_calendar module_style">
-					<div className="shift_calendar_actions">
+					{/* <div className="shift_calendar_actions">
 						<div className="calendar_filtering">
 							<select className="month_filter">
 								<option value="type">Month</option>
@@ -249,26 +258,31 @@ function Volunteers() {
 								<option value="type">Week</option>
 							</select>
 						</div>
-						{/* <button
+						<button
 							className="create_shift_btn"
 							id="assin_to_shift_btn"
 							type="button"
 							onClick={() => setIsShiftPopupOpen(true)}>
 							<CirclePlus />
 							<p>Assign Shift</p>
-						</button> */}
-					</div>
+						</button>
+					</div> */}
 
 					<ShiftCalendar
 						weekStart={weekStart}
 						shifts={shifts}
-						onAssignShift={() => setIsShiftPopupOpen(true)}
+						onAssignShift={(shift) => {
+							setSelectedShift(shift);
+							setIsShiftPopupOpen(true);
+						}}
 					/>
 				</div>
 			</div>
 			{isShiftPopupOpen && (
 				<ShiftSchedulePopUpComponent
+					shift={selectedShift}
 					onClose={() => setIsShiftPopupOpen(false)}
+					onAssigned={handleShiftAssigned}
 				/>
 			)}
 		</div>

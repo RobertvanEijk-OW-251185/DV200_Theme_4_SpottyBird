@@ -50,12 +50,15 @@ export const createShift = async (req, res) => {
 export const assignVolunteer = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { volunteerId } = req.body;
+		const { volunteerId, enclosure } = req.body;
 		if (
 			!mongoose.isValidObjectId(id) ||
 			!mongoose.isValidObjectId(volunteerId)
 		) {
 			return res.status(400).json({ message: "Invalid ID." });
+		}
+		if (enclosure !== undefined && typeof enclosure !== "string") {
+			return res.status(400).json({ message: "Invalid enclosure." });
 		}
 
 		const shift = await Shift.findById(id);
@@ -81,7 +84,10 @@ export const assignVolunteer = async (req, res) => {
 				assignees: { $ne: volunteerId },
 				$expr: { $lt: [{ $size: "$assignees" }, "$capacity"] },
 			},
-			{ $addToSet: { assignees: volunteerId } },
+			{
+				$addToSet: { assignees: volunteerId },
+				...(enclosure?.trim() ? { $set: { enclosure: enclosure.trim() } } : {}),
+			},
 			{ returnDocument: "after" },
 		).populate("assignees", "name role");
 

@@ -15,6 +15,7 @@ const shiftSchema = new mongoose.Schema(
 		role: { type: String, required: true, trim: true },
 		startTime: { type: String, required: true },
 		endTime: { type: String, required: true },
+		enclosure: { type: String, trim: true, default: "" },
 		capacity: { type: Number, default: 1, min: 1 },
 		assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer" }],
 		createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

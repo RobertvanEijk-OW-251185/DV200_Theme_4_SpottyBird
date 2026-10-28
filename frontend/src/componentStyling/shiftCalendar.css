@@ -323,13 +323,16 @@
 	line-height: normal;
 }
 
+/* Assign to Shift popup */
+
 .shift_schedule_popup {
 	display: flex;
 	flex-direction: column;
-	width: min(40rem, 100%);
+	width: min(50rem, 100%);
 	max-height: calc(100vh - 2rem);
 	overflow-y: auto;
 	padding: 1.5rem;
+	gap: 2rem;
 	border-radius: 1rem;
 	background: #fff;
 	box-shadow: 0 10px 28px 0 rgba(0, 0, 0, 0.14);
@@ -369,4 +372,87 @@
 
 .close_popup_btn:hover {
 	color: #a12622;
+}
+
+.shift_schedule_popup_choices {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	align-self: stretch;
+}
+
+.volunteer_select,
+.enclosure_select,
+.assigned_shift_display {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-start;
+	align-self: stretch;
+
+	gap: 0.5rem;
+
+	width: 30%;
+}
+
+.assign_shifts_dropdown_selector,
+.assign_enclosure_dropdown_selector {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	align-self: stretch;
+
+	background-color: #fff;
+	padding: 0.25rem 0.5rem;
+
+	border-radius: 0.25rem;
+	border: 1px solid #064d25;
+}
+
+.assigned_shift_display {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	align-self: stretch;
+
+	height: 80%;
+	margin-top: 3%;
+
+	background-color: #fff;
+	padding: 0.25rem 0.5rem;
+
+	border-radius: 0.25rem;
+	border: 1px solid #064d25;
+}
+
+.assign_shift_actions {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	align-self: stretch;
+}
+
+.assign_to_shift_btn {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	padding: 0.75rem 2rem;
+	border-radius: 0.5rem;
+
+	background-color: #064d25;
+	border-style: none;
+}
+
+.assign_to_shift_btn:hover {
+	background-color: #0f783c;
+}
+
+.assign_to_shift_btn:active {
+	background-color: #0e3f23;
 }
