@@ -7,6 +7,7 @@ import { addDays, format, startOfWeek } from "date-fns";
 import PageHeaderComponent from "../components/pagesHeader";
 import ShiftSchedulePopUpComponent from "../components/shiftAssignSchedulePopOverComponent";
 import ShiftCalendar from "../components/shiftCalendar";
+import AddPersonPopupComponent from "../components/addPersonPopup";
 
 // icon import
 import { Target, ListTodo, ContactRound, CirclePlus } from "lucide-react";
@@ -27,6 +28,7 @@ function Volunteers() {
 	const [selectedRole, setSelectedRole] = useState("all");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [isShiftPopupOpen, setIsShiftPopupOpen] = useState(false);
+	const [isAddPersonPopupOpen, setIsAddPersonPopupOpen] = useState(false);
 	const [selectedShift, setSelectedShift] = useState(null);
 	const [weekStart] = useState(() =>
 		startOfWeek(new Date(), { weekStartsOn: 1 }),
@@ -174,7 +176,10 @@ function Volunteers() {
 				<div className="volunteer_contact_module module_style">
 					<div className="vol_contact_title_section">
 						<h3>Contact</h3>
-						<button type="button" className="add_person_btn">
+						<button
+							type="button"
+							className="add_person_btn"
+							onClick={() => setIsAddPersonPopupOpen(true)}>
 							<CirclePlus />
 							<p>Add Contact</p>
 						</button>
@@ -283,6 +288,18 @@ function Volunteers() {
 					shift={selectedShift}
 					onClose={() => setIsShiftPopupOpen(false)}
 					onAssigned={handleShiftAssigned}
+				/>
+			)}
+			{isAddPersonPopupOpen && (
+				<AddPersonPopupComponent
+					onClose={() => setIsAddPersonPopupOpen(false)}
+					onVolunteerAdded={(volunteer) => {
+						setVolunteers((currentVolunteers) =>
+							[...currentVolunteers, volunteer].sort((a, b) =>
+								a.name.localeCompare(b.name),
+							),
+						);
+					}}
 				/>
 			)}
 		</div>

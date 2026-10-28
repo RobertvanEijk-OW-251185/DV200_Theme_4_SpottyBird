@@ -6,6 +6,7 @@ const volunteerSchema = new mongoose.Schema(
 		role: { type: String, required: true, trim: true },
 		email: { type: String, trim: true, lowercase: true },
 		phone: { type: String, trim: true },
+		address: { type: String, trim: true },
 		availableFrom: { type: String, default: "08:00" },
 		availableTo: { type: String, default: "16:00" },
 		isAway: { type: Boolean, default: false },

@@ -173,6 +173,16 @@
 	background: #f0f0f0;
 }
 
+.add_person_btn:hover {
+	color: #fff;
+	background-color: #30a928;
+}
+
+.add_person_btn:active {
+	color: #fff;
+	background-color: #064d25;
+}
+
 .contact_actions {
 	display: flex;
 	flex-direction: column;
