@@ -112,12 +112,14 @@
 }
 
 .case_image {
+	display: block;
 	height: 14.54825rem;
 	align-self: stretch;
 	aspect-ratio: 79/71;
+	object-fit: cover;
 
 	border-radius: 0.1875rem;
-	background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+	background-color: lightgray;
 }
 
 .case_details {

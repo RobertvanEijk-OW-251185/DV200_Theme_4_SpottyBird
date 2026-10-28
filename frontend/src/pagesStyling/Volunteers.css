@@ -78,8 +78,11 @@
 	justify-content: flex-start;
 	align-items: center;
 
-	padding: 2rem;
-	gap: 1rem;
+	/* padding: 2rem;
+	gap: 1rem; */
+
+	border-radius: 0.75rem;
+	border: 1px solid #dee3db;
 }
 
 .shift_calendar_actions {

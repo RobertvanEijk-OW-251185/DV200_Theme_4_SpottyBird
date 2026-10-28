@@ -13,6 +13,27 @@ import AddPersonPopupComponent from "../components/addPersonPopup";
 import { Target, ListTodo, ContactRound, CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const infoModules = [
+	{
+		title: "Volunteers scheduled",
+		info: "Unique volunteers assigned this week",
+		icon: Target,
+		variant: "target_icon",
+	},
+	{
+		title: "Shifts scheduled",
+		info: "Shift slots planned this week",
+		icon: ListTodo,
+		variant: "shifts_icon",
+	},
+	{
+		title: "Available volunteers",
+		info: "Not marked as away",
+		icon: ContactRound,
+		variant: "availability_icon",
+	},
+];
+
 function initials(name = "") {
 	return name
 		.trim()
@@ -123,6 +144,17 @@ function Volunteers() {
 		return matchesSearch && matchesRole && matchesStatus;
 	});
 	const statusFilters = ["all", "available", "working", "away"];
+	const scheduledVolunteerIds = new Set();
+	shifts.forEach((shift) => {
+		shift.assignees?.forEach((volunteer) => {
+			scheduledVolunteerIds.add(volunteer._id);
+		});
+	});
+	const infoStats = [
+		scheduledVolunteerIds.size,
+		shifts.length,
+		volunteers.filter((volunteer) => !volunteer.isAway).length,
+	];
 	const handleShiftAssigned = (updatedShift) => {
 		setShifts((currentShifts) =>
 			currentShifts.map((shift) =>
@@ -142,36 +174,18 @@ function Volunteers() {
 
 			<div className="volunteer_schedule_container">
 				<div className="volunteer_info_modules">
-					<div className="info_module module_style">
-						<div className="target_icon">
-							<Target />
+					{infoModules.map(({ title, info, icon: Icon, variant }, index) => (
+						<div className="info_module module_style" key={title}>
+							<div className={variant}>
+								<Icon aria-hidden="true" />
+							</div>
+							<div className="info_text">
+								<h3>{loading || error ? "—" : infoStats[index]}</h3>
+								<h3>{title}</h3>
+								<p>{info}</p>
+							</div>
 						</div>
-						<div className="info_text">
-							<h3>32</h3>
-							<h3>Scheduled</h3>
-							<p>jslka</p>
-						</div>
-					</div>
-					<div className="info_module module_style">
-						<div className="shifts_icon">
-							<ListTodo />
-						</div>
-						<div className="info_text">
-							<h3>32</h3>
-							<h3>Scheduled</h3>
-							<p>jslka</p>
-						</div>
-					</div>
-					<div className="info_module module_style">
-						<div className="availability_icon">
-							<ContactRound />
-						</div>
-						<div className="info_text">
-							<h3>32</h3>
-							<h3>Scheduled</h3>
-							<p>jslka</p>
-						</div>
-					</div>
+					))}
 				</div>
 				<div className="volunteer_contact_module module_style">
 					<div className="vol_contact_title_section">
@@ -253,7 +267,8 @@ function Volunteers() {
 							))}
 					</div>
 				</div>
-				<div className="volunteer_calendar module_style">
+				{/* <div className="volunteer_calendar module_style"> */}
+				<div className="volunteer_calendar">
 					{/* <div className="shift_calendar_actions">
 						<div className="calendar_filtering">
 							<select className="month_filter">

@@ -7,18 +7,15 @@ import PageHeaderComponent from "../components/pagesHeader";
 import AdmissionFormTextInputComponent from "../components/admissionFormTextInput";
 import AdmissionFormDropDownInputComponent from "../components/admissionFormDropDownInput";
 import AdmissionFormTextNotesInputComponent from "../components/admissionFormTextNotesInput";
-import AdmissionFormPillSelectComponent from "../components/admissionFormPillSelector";
 import SavedDraftsPopUp from "../components/savedDraftPopup";
 
 // import React things
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Import fontawesome icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faCheck,
-	faArrowUpFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 function buildAdmissionPayload(form, recordType) {
 	const formData = new FormData(form);
@@ -96,6 +93,7 @@ function buildAdmissionPayload(form, recordType) {
 			carrier: value("carrier"),
 		},
 		assignment: {
+			assignedVolunteer: value("assignedVolunteer") || null,
 			accessLevel: value("accessLevel"),
 			referralRequired:
 				value("referralRequired") === "yes"
@@ -128,17 +126,137 @@ function formatDateForInput(value, inputType) {
 	return date.toISOString().slice(0, inputType === "date" ? 10 : 16);
 }
 
+function populateAdmissionForm(form, record) {
+	const coordinates = record.incident?.coordinates;
+	const assignedVolunteer = record.assignment?.assignedVolunteer;
+	const values = {
+		plannedDate: record.releasePlan?.plannedDate,
+		reviewTime: record.releasePlan?.reviewTime,
+		releaseLocation: record.releasePlan?.location,
+		finderName: record.finder?.name,
+		finderPhone: record.finder?.phone,
+		finderEmail: record.finder?.email,
+		finderPosition: record.finder?.position,
+		reportedAt: record.finder?.reportedAt,
+		intakeSource: record.intakeSource,
+		animalType: record.animal?.type,
+		species: record.animal?.species,
+		scientificName: record.animal?.scientificName,
+		lifeStage: record.animal?.lifeStage,
+		sex: record.animal?.sex,
+		microchipId: record.animal?.microchipId,
+		address: record.incident?.address,
+		foundAt: record.incident?.foundAt,
+		weather: record.incident?.weather,
+		coordinates:
+			Number.isFinite(coordinates?.latitude) &&
+			Number.isFinite(coordinates?.longitude)
+				? `${coordinates.latitude}, ${coordinates.longitude}`
+				: "",
+		incidentDescription: record.incident?.description,
+		weight: record.clinical?.weight?.value,
+		weightUnit: record.clinical?.weight?.unit,
+		temperature: record.clinical?.temperatureCelsius,
+		heartRate: record.clinical?.heartRateBpm,
+		arrivalCondition: record.clinical?.arrivalCondition,
+		currentCondition: record.clinical?.currentCondition,
+		enclosure: record.clinical?.enclosure,
+		carrier: record.clinical?.carrier,
+		priority: record.priority,
+		careTasks: record.careTasks,
+		status: record.status,
+		assignedVolunteer:
+			typeof assignedVolunteer === "object"
+				? assignedVolunteer?._id
+				: assignedVolunteer,
+		accessLevel: record.assignment?.accessLevel,
+		referralRequired:
+			record.assignment?.referralRequired === true
+				? "yes"
+				: record.assignment?.referralRequired === false
+					? "no"
+					: "",
+		consentToContact:
+			record.finder?.consentToContact === true
+				? "yes"
+				: record.finder?.consentToContact === false
+					? "no"
+					: "",
+		admissionNotes: record.admissionNotes,
+	};
+
+	form.reset();
+	for (const [name, value] of Object.entries(values)) {
+		const field = form.elements.namedItem(name);
+		if (!field) continue;
+
+		field.value =
+			name === "plannedDate" || name === "reportedAt" || name === "foundAt"
+				? formatDateForInput(value, field.type)
+				: (value ?? "");
+	}
+}
+
 function Admissions() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [feedback, setFeedback] = useState(null);
 	const formRef = useRef(null);
+	const attachmentInputRef = useRef(null);
+	const [selectedFiles, setSelectedFiles] = useState([]);
+	const [volunteers, setVolunteers] = useState([]);
+	const [isLoadingVolunteers, setIsLoadingVolunteers] = useState(true);
+	const [volunteerError, setVolunteerError] = useState("");
+	const [enclosures, setEnclosures] = useState([]);
+	const [isLoadingEnclosures, setIsLoadingEnclosures] = useState(true);
+	const [enclosureError, setEnclosureError] = useState("");
 
 	const [draftCount, setDraftCount] = useState(null);
 	const [draftCountError, setDraftCountError] = useState("");
 	const [isDraftPopupOpen, setIsDraftPopupOpen] = useState(false);
+	const [searchParams] = useSearchParams();
+	const navigate = useNavigate();
+	const caseId = searchParams.get("caseId");
+	const [caseToEdit, setCaseToEdit] = useState(null);
+	const [isLoadingCase, setIsLoadingCase] = useState(false);
 
 	useEffect(() => {
 		const controller = new AbortController();
+
+		const loadVolunteers = async () => {
+			const token = localStorage.getItem("authToken");
+			if (!token) {
+				setVolunteerError("Log in to load the volunteer list.");
+				setIsLoadingVolunteers(false);
+				return;
+			}
+
+			try {
+				const response = await fetch("/api/volunteers", {
+					headers: { Authorization: `Bearer ${token}` },
+					signal: controller.signal,
+				});
+				const result = await response.json();
+
+				if (!response.ok) {
+					throw new Error(
+						result.message || `Unable to load volunteers (${response.status}).`,
+					);
+				}
+				if (!Array.isArray(result)) {
+					throw new Error("The server returned an invalid volunteer list.");
+				}
+
+				setVolunteers(result);
+			} catch (error) {
+				if (error.name !== "AbortError") {
+					setVolunteerError(error.message || "Unable to load volunteers.");
+				}
+			} finally {
+				if (!controller.signal.aborted) {
+					setIsLoadingVolunteers(false);
+				}
+			}
+		};
 
 		const loadDraftCount = async () => {
 			try {
@@ -164,85 +282,111 @@ function Admissions() {
 			}
 		};
 
+		const loadEnclosures = async () => {
+			try {
+				const response = await fetch("/api/enclosures", {
+					signal: controller.signal,
+				});
+				const result = await response.json();
+
+				if (!response.ok) {
+					throw new Error(
+						result.message || `Unable to load enclosures (${response.status}).`,
+					);
+				}
+				if (!Array.isArray(result)) {
+					throw new Error("The server returned an invalid enclosure list.");
+				}
+
+				setEnclosures(result);
+			} catch (error) {
+				if (error.name !== "AbortError") {
+					setEnclosureError(error.message || "Unable to load enclosures.");
+				}
+			} finally {
+				if (!controller.signal.aborted) {
+					setIsLoadingEnclosures(false);
+				}
+			}
+		};
+
+		loadVolunteers();
+		loadEnclosures();
 		loadDraftCount();
 		return () => controller.abort();
 	}, []);
 
+	useEffect(() => {
+		if (!caseId) return undefined;
+
+		const controller = new AbortController();
+		const loadCase = async () => {
+			setIsLoadingCase(true);
+			setFeedback(null);
+
+			try {
+				const response = await fetch(`/api/cases/${caseId}`, {
+					signal: controller.signal,
+				});
+				const result = await response.json();
+
+				if (!response.ok) {
+					throw new Error(
+						result.message || `Unable to load case (${response.status}).`,
+					);
+				}
+
+				setCaseToEdit(result);
+			} catch (error) {
+				if (error.name !== "AbortError") {
+					setFeedback({
+						type: "error",
+						message: `Unable to load case details: ${error.message}`,
+					});
+				}
+			} finally {
+				if (!controller.signal.aborted) setIsLoadingCase(false);
+			}
+		};
+
+		loadCase();
+		return () => controller.abort();
+	}, [caseId]);
+
+	useEffect(() => {
+		if (
+			!caseToEdit ||
+			isLoadingVolunteers ||
+			isLoadingEnclosures ||
+			!formRef.current
+		) {
+			return;
+		}
+
+		populateAdmissionForm(formRef.current, caseToEdit);
+	}, [caseToEdit, isLoadingVolunteers, isLoadingEnclosures]);
+
 	const handleClearForm = (event) => {
 		event.currentTarget.form.reset();
+		if (attachmentInputRef.current) attachmentInputRef.current.value = "";
+		setSelectedFiles([]);
 		setFeedback(null);
 	};
 
 	const handleContinueDraft = (draft) => {
 		const form = formRef.current;
 		if (!form) {
-			setFeedback({ type: "error", message: "The admission form is unavailable." });
+			setFeedback({
+				type: "error",
+				message: "The admission form is unavailable.",
+			});
 			return;
 		}
 
-		const coordinates = draft.incident?.coordinates;
-		const values = {
-			plannedDate: draft.releasePlan?.plannedDate,
-			reviewTime: draft.releasePlan?.reviewTime,
-			releaseLocation: draft.releasePlan?.location,
-			finderName: draft.finder?.name,
-			finderPhone: draft.finder?.phone,
-			finderEmail: draft.finder?.email,
-			finderPosition: draft.finder?.position,
-			reportedAt: draft.finder?.reportedAt,
-			intakeSource: draft.intakeSource,
-			animalType: draft.animal?.type,
-			species: draft.animal?.species,
-			scientificName: draft.animal?.scientificName,
-			lifeStage: draft.animal?.lifeStage,
-			sex: draft.animal?.sex,
-			microchipId: draft.animal?.microchipId,
-			address: draft.incident?.address,
-			foundAt: draft.incident?.foundAt,
-			weather: draft.incident?.weather,
-			coordinates:
-				Number.isFinite(coordinates?.latitude) &&
-				Number.isFinite(coordinates?.longitude)
-					? `${coordinates.latitude}, ${coordinates.longitude}`
-					: "",
-			incidentDescription: draft.incident?.description,
-			weight: draft.clinical?.weight?.value,
-			weightUnit: draft.clinical?.weight?.unit,
-			temperature: draft.clinical?.temperatureCelsius,
-			heartRate: draft.clinical?.heartRateBpm,
-			arrivalCondition: draft.clinical?.arrivalCondition,
-			currentCondition: draft.clinical?.currentCondition,
-			enclosure: draft.clinical?.enclosure,
-			carrier: draft.clinical?.carrier,
-			priority: draft.priority,
-			careTasks: draft.careTasks,
-			status: draft.status,
-			accessLevel: draft.assignment?.accessLevel,
-			referralRequired:
-				draft.assignment?.referralRequired === true
-					? "yes"
-					: draft.assignment?.referralRequired === false
-						? "no"
-						: "",
-			consentToContact:
-				draft.finder?.consentToContact === true
-					? "yes"
-					: draft.finder?.consentToContact === false
-						? "no"
-						: "",
-			admissionNotes: draft.admissionNotes,
-		};
-
 		form.reset();
-		for (const [name, fieldValue] of Object.entries(values)) {
-			const field = form.elements.namedItem(name);
-			if (!field) continue;
-
-			field.value =
-				name === "plannedDate" || name === "reportedAt" || name === "foundAt"
-					? formatDateForInput(fieldValue, field.type)
-					: fieldValue ?? "";
-		}
+		if (attachmentInputRef.current) attachmentInputRef.current.value = "";
+		setSelectedFiles([]);
+		populateAdmissionForm(form, draft);
 
 		setIsDraftPopupOpen(false);
 		setFeedback({
@@ -295,6 +439,13 @@ function Admissions() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const form = event.currentTarget;
+		if (caseId && !caseToEdit) {
+			setFeedback({
+				type: "error",
+				message: "The case must finish loading before it can be updated.",
+			});
+			return;
+		}
 
 		let payload;
 		try {
@@ -303,15 +454,42 @@ function Admissions() {
 			setFeedback({ type: "error", message: error.message });
 			return;
 		}
+		if (caseId && caseToEdit) {
+			const hiddenFields = [
+				["finderPosition", "finder", "position"],
+				["carrier", "clinical", "carrier"],
+				["plannedDate", "releasePlan", "plannedDate"],
+				["reviewTime", "releasePlan", "reviewTime"],
+				["releaseLocation", "releasePlan", "location"],
+				["accessLevel", "assignment", "accessLevel"],
+			];
+			for (const [inputName, group, field] of hiddenFields) {
+				if (!form.elements.namedItem(inputName)) {
+					payload[group][field] = caseToEdit[group]?.[field];
+				}
+			}
+			if (
+				!form.elements.namedItem("coordinates") &&
+				caseToEdit.incident?.coordinates
+			) {
+				payload.incident.coordinates = caseToEdit.incident.coordinates;
+			}
+		}
 
 		setIsSubmitting(true);
 		setFeedback(null);
 		try {
-			const response = await fetch("/api/cases", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(payload),
-			});
+			const requestBody = new FormData();
+			requestBody.set("caseData", JSON.stringify(payload));
+			selectedFiles.forEach((file) => requestBody.append("attachments", file));
+
+			const response = await fetch(
+				caseId ? `/api/cases/${caseId}` : "/api/cases",
+				{
+					method: caseId ? "PATCH" : "POST",
+					body: requestBody,
+				},
+			);
 			const result = await response.json();
 			if (!response.ok) {
 				setFeedback({
@@ -321,11 +499,17 @@ function Admissions() {
 				return;
 			}
 
-			setFeedback({
-				type: "success",
-				message: `Admission saved to the database. Case ID: ${result.caseNumber || result._id}`,
-			});
-			form.reset();
+			if (caseId) {
+				navigate(`/case/${caseId}`);
+			} else {
+				setFeedback({
+					type: "success",
+					message: `Admission saved to the database. Case ID: ${result.caseNumber || result._id}`,
+				});
+				form.reset();
+				if (attachmentInputRef.current) attachmentInputRef.current.value = "";
+				setSelectedFiles([]);
+			}
 		} catch (error) {
 			setFeedback({
 				type: "error",
@@ -336,11 +520,50 @@ function Admissions() {
 		}
 	};
 
+	const handleFileSelection = (event) => {
+		const files = Array.from(event.currentTarget.files ?? []);
+		event.currentTarget.value = "";
+
+		const allowedFileName = /\.(jpe?g|png|pdf|docx?)$/i;
+		const invalidFile = files.find(
+			(file) =>
+				!allowedFileName.test(file.name) || file.size > 10 * 1024 * 1024,
+		);
+		if (invalidFile) {
+			setFeedback({
+				type: "error",
+				message: `${invalidFile.name} is not supported or exceeds 10 MB. Use JPG, PNG, PDF, DOC, or DOCX files.`,
+			});
+			return;
+		}
+
+		if (selectedFiles.length + files.length > 20) {
+			setFeedback({
+				type: "error",
+				message: "You can attach up to 20 files to one admission.",
+			});
+			return;
+		}
+
+		setSelectedFiles((currentFiles) => [...currentFiles, ...files]);
+		setFeedback(null);
+	};
+
+	const removeSelectedFile = (fileIndex) => {
+		setSelectedFiles((currentFiles) =>
+			currentFiles.filter((_, index) => index !== fileIndex),
+		);
+	};
+
 	return (
 		<div className="main_content">
 			<PageHeaderComponent
-				title="Admission"
-				description="Case identification numbers , locations status and priorities all in one place"
+				title={caseId ? "Edit Case Details" : "Admission"}
+				description={
+					caseId
+						? "Update this animal's existing case information."
+						: "Case identification numbers , locations status and priorities all in one place"
+				}
 			/>
 			<div className="admissions_forms">
 				<div className="drafts_button_container">
@@ -369,6 +592,7 @@ function Admissions() {
 						onCountChange={setDraftCount}
 					/>
 				)}
+				{isLoadingCase && <p role="status">Loading case details...</p>}
 				{/* <div className="intake_details_container">
 					<div className="new_case_intake_info">
 						<h3>New Case Intake</h3>
@@ -400,7 +624,7 @@ function Admissions() {
 					ref={formRef}
 					className="form_container"
 					onSubmit={handleSubmit}>
-					<div className="release_date_form_container">
+					{/* <div className="release_date_form_container">
 						<div className="form_container_title_block">
 							<h3>Release Date Block</h3>
 							<p>
@@ -428,7 +652,7 @@ function Admissions() {
 								name="releaseLocation"
 							/>
 						</div>
-					</div>
+					</div> */}
 					<div className="finder_report_details_form_container">
 						<div className="form_container_title_block">
 							<h3>Finder & Report Details</h3>
@@ -460,11 +684,11 @@ function Admissions() {
 							/>
 						</div>
 						<div className="form_container_content">
-							<AdmissionFormTextInputComponent
+							{/* <AdmissionFormTextInputComponent
 								title="Position"
 								placeholder="Emily Rogers"
 								name="finderPosition"
-							/>
+							/> */}
 							<AdmissionFormTextInputComponent
 								title="Reported Date & Time*"
 								placeholder="16 May 2025, 14:45"
@@ -563,9 +787,9 @@ function Admissions() {
 								name="address"
 								required
 							/>
-							<button className="view_map" type="button">
+							{/* <button className="view_map" type="button">
 								<h3>View Map</h3>
-							</button>
+							</button> */}
 						</div>
 						<div className="form_container_content">
 							<AdmissionFormTextInputComponent
@@ -580,11 +804,11 @@ function Admissions() {
 								placeholder="Overcast, 18°C"
 								name="weather"
 							/>
-							<AdmissionFormTextInputComponent
+							{/* <AdmissionFormTextInputComponent
 								title="GPS coordinates"
 								placeholder="-25.8580, 28.1894"
 								name="coordinates"
-							/>
+							/> */}
 						</div>
 						<div className="form_container_content">
 							<AdmissionFormTextInputComponent
@@ -655,14 +879,29 @@ function Admissions() {
 						<div className="form_container_content">
 							<AdmissionFormDropDownInputComponent
 								title="Enclosure"
-								placeholder="Select Enclosure"
+								placeholder={
+									isLoadingEnclosures
+										? "Loading enclosures..."
+										: "Select Enclosure"
+								}
 								name="enclosure"
+								options={enclosures.map((enclosure) => ({
+									label: enclosure.name,
+									value: enclosure.name,
+								}))}
 							/>
-							<AdmissionFormDropDownInputComponent
+							{enclosureError && (
+								<p
+									role="alert"
+									className="admission_feedback admission_feedback_error">
+									{enclosureError}
+								</p>
+							)}
+							{/* <AdmissionFormDropDownInputComponent
 								title="Box / Carrier"
 								placeholder="Select Carrier"
 								name="carrier"
-							/>
+							/> */}
 							<AdmissionFormDropDownInputComponent
 								title="Priority"
 								placeholder="Select Urgency"
@@ -685,17 +924,17 @@ function Admissions() {
 							</p>
 						</div>
 						<div className="admission_form_divider"></div>
-						<div className="form_container_content_pills">
+						{/* <div className="form_container_content_pills">
 							<p className="ad_form_input_title">Actions Already Taken</p>
 							<div className="pills">
-								{/* Condition on arrival buttons go here */}
+								Condition on arrival buttons go here
 								<AdmissionFormPillSelectComponent title="Deceased" />
 								<AdmissionFormPillSelectComponent title="Critical" />
 								<AdmissionFormPillSelectComponent title="Moderate" />
 								<AdmissionFormPillSelectComponent title="Minor" />
 								<AdmissionFormPillSelectComponent title="Stable" />
 							</div>
-						</div>
+						</div> */}
 						<div className="form_container_content">
 							<AdmissionFormTextNotesInputComponent
 								title="Need To Do / Care Tasks"
@@ -704,7 +943,19 @@ function Admissions() {
 							/>
 						</div>
 						<div className="admission_form_divider"></div>
-						<div className="upload_images">
+						<input
+							ref={attachmentInputRef}
+							className="admission_attachment_input"
+							type="file"
+							name="attachments"
+							accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+							multiple
+							onChange={handleFileSelection}
+						/>
+						<button
+							className="upload_images"
+							type="button"
+							onClick={() => attachmentInputRef.current?.click()}>
 							{/* upload icon */}
 							<FontAwesomeIcon
 								className="uploadIcon"
@@ -712,9 +963,28 @@ function Admissions() {
 							/>
 							<div className="upload_images_text">
 								<h3>+ Upload photos or files</h3>
-								<p>JPG or PNG • Max 10 MB each</p>
+								<p>JPG, PNG, PDF, DOC or DOCX • Max 10 MB each</p>
 							</div>
-						</div>
+						</button>
+						<p className="attachment_draft_note">
+							Attachments are saved with the admission, not with drafts.
+						</p>
+						{selectedFiles.length > 0 && (
+							<ul className="selected_attachments">
+								{selectedFiles.map((file, index) => (
+									<li
+										key={`${file.name}-${file.size}-${file.lastModified}-${index}`}>
+										<span>{file.name}</span>
+										<button
+											type="button"
+											onClick={() => removeSelectedFile(index)}
+											aria-label={`Remove ${file.name}`}>
+											Remove
+										</button>
+									</li>
+								))}
+							</ul>
+						)}
 					</div>
 					<div className="assignment_consent_release_form_container">
 						<div className="form_container_title_block">
@@ -724,9 +994,23 @@ function Admissions() {
 						<div className="admission_form_divider"></div>
 						<div className="form_container_content">
 							<AdmissionFormDropDownInputComponent
-								title="Assigned To*"
-								placeholder="Select Staff Member"
+								title="Assigned Volunteer"
+								placeholder={
+									isLoadingVolunteers ? "Loading volunteers..." : "Unassigned"
+								}
+								name="assignedVolunteer"
+								options={volunteers.map((volunteer) => ({
+									label: `${volunteer.name} (${volunteer.role})`,
+									value: volunteer._id,
+								}))}
 							/>
+							{volunteerError && (
+								<p
+									role="alert"
+									className="admission_feedback admission_feedback_error">
+									{volunteerError}
+								</p>
+							)}
 							<AdmissionFormDropDownInputComponent
 								title="Case Status*"
 								placeholder="New Admission"
@@ -740,7 +1024,7 @@ function Admissions() {
 									{ label: "Closed", value: "closed" },
 								]}
 							/>
-							<AdmissionFormDropDownInputComponent
+							{/* <AdmissionFormDropDownInputComponent
 								title="Access Level*"
 								placeholder="View / Edit Rights"
 								name="accessLevel"
@@ -750,10 +1034,10 @@ function Admissions() {
 									{ label: "Edit", value: "edit" },
 									{ label: "View / Edit", value: "view_edit" },
 								]}
-							/>
+							/> */}
 						</div>
 						<div className="form_container_content">
-							<AdmissionFormDropDownInputComponent
+							{/* <AdmissionFormDropDownInputComponent
 								title="Referral Required*"
 								placeholder="Select Yes / No"
 								name="referralRequired"
@@ -762,7 +1046,7 @@ function Admissions() {
 									{ label: "Yes", value: "yes" },
 									{ label: "No", value: "no" },
 								]}
-							/>
+							/> */}
 							<AdmissionFormDropDownInputComponent
 								title="Consent to Contact Finder"
 								placeholder="Select Consent"
@@ -772,10 +1056,10 @@ function Admissions() {
 									{ label: "No", value: "no" },
 								]}
 							/>
-							<AdmissionFormDropDownInputComponent
+							{/* <AdmissionFormDropDownInputComponent
 								title="Release / Outcome"
 								placeholder="Pending Assessment"
-							/>
+							/> */}
 						</div>
 						<div className="form_container_content">
 							<AdmissionFormTextNotesInputComponent
@@ -796,22 +1080,30 @@ function Admissions() {
 						<button
 							className="admission_submit_button submit_button"
 							type="submit"
-							disabled={isSubmitting}>
-							{isSubmitting ? "Saving..." : "Admit Animal"}
+							disabled={
+								isSubmitting || isLoadingCase || (caseId && !caseToEdit)
+							}>
+							{isSubmitting
+								? caseId
+									? "Saving Changes..."
+									: "Saving..."
+								: caseId
+									? "Save Changes"
+									: "Admit Animal"}
 						</button>
 						<div className="extra_actions_buttons">
 							<button
 								className="clear_form_btn clear_button"
 								type="button"
 								onClick={handleClearForm}
-								disabled={isSubmitting}>
+								disabled={isSubmitting || isLoadingCase}>
 								Clear Form
 							</button>
 							<button
 								className="save_draft_btn submit_button"
 								type="button"
 								onClick={handleSaveDraft}
-								disabled={isSubmitting}>
+								disabled={isSubmitting || isLoadingCase || Boolean(caseId)}>
 								{isSubmitting ? "Saving..." : "Save Draft"}
 							</button>
 						</div>

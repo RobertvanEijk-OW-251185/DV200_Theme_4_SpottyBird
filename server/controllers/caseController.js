@@ -1,6 +1,19 @@
 import mongoose from "mongoose";
+import path from "node:path";
+import { unlink } from "node:fs/promises";
 import Case from "../models/Case.js";
+import { uploadsDirectory } from "../middleware/caseAttachments.js";
 import { generateCaseNumber } from "../utils/caseNumber.js";
+
+const removeUploadedFiles = async (files = []) => {
+	await Promise.all(
+		files.map((file) =>
+			unlink(file.path).catch((error) => {
+				console.error("Failed to remove unattached case file:", error);
+			}),
+		),
+	);
+};
 
 export const getCases = async (req, res) => {
 	try {
@@ -9,6 +22,7 @@ export const getCases = async (req, res) => {
 			completionStatus: "complete",
 		})
 			.populate("assignment.assignedTo", "username email")
+			.populate("assignment.assignedVolunteer", "name role email")
 			.sort({ updatedAt: -1 })
 			.limit(50);
 		return res.json(cases);
@@ -28,7 +42,9 @@ export const getCaseById = async (req, res) => {
 			_id: req.params.id,
 			recordType: "case",
 			completionStatus: "complete",
-		}).populate("assignment.assignedTo", "username email");
+		})
+			.populate("assignment.assignedTo", "username email")
+			.populate("assignment.assignedVolunteer", "name role email");
 
 		if (!caseRecord) {
 			return res.status(404).json({ message: "Case not found." });
@@ -41,6 +57,51 @@ export const getCaseById = async (req, res) => {
 	}
 };
 
+export const getCaseFile = async (req, res) => {
+	try {
+		if (!mongoose.isValidObjectId(req.params.id)) {
+			return res.status(400).json({ message: "Invalid case ID." });
+		}
+
+		const caseRecord = await Case.findOne({
+			_id: req.params.id,
+			recordType: "case",
+			completionStatus: "complete",
+		}).select("attachments");
+
+		const attachment = (caseRecord?.attachments ?? []).find(
+			(file) => file.id === req.params.fileId,
+		);
+		if (
+			!attachment ||
+			path.basename(attachment.storedName) !== attachment.storedName
+		) {
+			return res.status(404).json({ message: "File not found." });
+		}
+
+		const filePath = path.join(uploadsDirectory, attachment.storedName);
+		if (req.query.download === "1") {
+			return res.download(filePath, attachment.originalName, (error) => {
+				if (error && !res.headersSent) {
+					console.error("Failed to download case file:", error);
+					res.status(404).json({ message: "File could not be downloaded." });
+				}
+			});
+		}
+
+		res.type(attachment.mimeType);
+		return res.sendFile(filePath, (error) => {
+			if (error && !res.headersSent) {
+				console.error("Failed to display case file:", error);
+				res.status(404).json({ message: "File could not be displayed." });
+			}
+		});
+	} catch (error) {
+		console.error("Failed to fetch case file:", error);
+		return res.status(500).json({ message: "Failed to fetch case file." });
+	}
+};
+
 export const getRehabilitation = async (req, res) => {
 	try {
 		const cases = await Case.find({
@@ -49,6 +110,7 @@ export const getRehabilitation = async (req, res) => {
 			status: { $in: ["in_care", "release_ready"] },
 		})
 			.populate("assignment.assignedTo", "username email")
+			.populate("assignment.assignedVolunteer", "name role email")
 			.sort({ updatedAt: -1 })
 			.limit(50);
 		return res.json(cases);
@@ -328,7 +390,14 @@ export const getCaseSummary = async (req, res) => {
 
 export const createCase = async (req, res) => {
 	try {
-		const { animal = {}, finder = {}, incident = {} } = req.body ?? {};
+		const body = req.body?.caseData
+			? JSON.parse(req.body.caseData)
+			: (req.body ?? {});
+		if (!body || typeof body !== "object" || Array.isArray(body)) {
+			await removeUploadedFiles(req.files);
+			return res.status(400).json({ message: "Invalid case data." });
+		}
+		const { animal = {}, finder = {}, incident = {} } = body;
 		const missingFields = [
 			["animal.type", animal.type],
 			["animal.species", animal.species],
@@ -344,21 +413,147 @@ export const createCase = async (req, res) => {
 			.map(([field]) => field);
 
 		if (missingFields.length) {
+			await removeUploadedFiles(req.files);
 			return res.status(400).json({
 				message: `Missing required fields: ${missingFields.join(", ")}`,
 			});
 		}
 
 		const caseNumber =
-			req.body.recordType === "case" ? await generateCaseNumber() : undefined;
-		const newCase = await Case.create({ ...req.body, caseNumber });
+			body.recordType === "case" ? await generateCaseNumber() : undefined;
+		const attachments = (req.files ?? []).map((file) => ({
+			id: file.caseAttachmentId,
+			originalName: file.originalname,
+			storedName: file.filename,
+			mimeType: file.mimetype,
+			size: file.size,
+		}));
+		const newCase = await Case.create({ ...body, attachments, caseNumber });
 		return res.status(201).json(newCase);
 	} catch (error) {
+		await removeUploadedFiles(req.files);
+		if (error instanceof SyntaxError) {
+			return res.status(400).json({ message: "Invalid case data." });
+		}
 		if (error.name === "ValidationError" || error.name === "CastError") {
 			return res.status(400).json({ message: error.message });
 		}
 
 		console.error("Failed to create case:", error);
 		return res.status(500).json({ message: "Failed to create case" });
+	}
+};
+
+const editableNestedFields = {
+	finder: [
+		"name",
+		"phone",
+		"email",
+		"position",
+		"reportedAt",
+		"consentToContact",
+	],
+	animal: [
+		"type",
+		"species",
+		"scientificName",
+		"lifeStage",
+		"sex",
+		"microchipId",
+	],
+	incident: [
+		"address",
+		"locationName",
+		"coordinates",
+		"foundAt",
+		"weather",
+		"description",
+	],
+	clinical: [
+		"weight",
+		"temperatureCelsius",
+		"heartRateBpm",
+		"arrivalCondition",
+		"currentCondition",
+		"enclosure",
+		"carrier",
+	],
+	assignment: ["assignedVolunteer", "accessLevel", "referralRequired"],
+	releasePlan: ["plannedDate", "reviewTime", "location"],
+};
+
+export const updateCase = async (req, res) => {
+	try {
+		const body = req.body?.caseData
+			? JSON.parse(req.body.caseData)
+			: (req.body ?? {});
+		if (!body || typeof body !== "object" || Array.isArray(body)) {
+			await removeUploadedFiles(req.files);
+			return res.status(400).json({ message: "Invalid case data." });
+		}
+
+		if (!mongoose.isValidObjectId(req.params.id)) {
+			await removeUploadedFiles(req.files);
+			return res.status(400).json({ message: "Invalid case ID." });
+		}
+
+		const caseRecord = await Case.findOne({
+			_id: req.params.id,
+			recordType: "case",
+			completionStatus: "complete",
+		});
+		if (!caseRecord) {
+			await removeUploadedFiles(req.files);
+			return res.status(404).json({ message: "Case not found." });
+		}
+
+		for (const field of [
+			"intakeSource",
+			"status",
+			"priority",
+			"admissionNotes",
+			"careTasks",
+		]) {
+			if (Object.hasOwn(body, field)) caseRecord.set(field, body[field]);
+		}
+		for (const [group, fields] of Object.entries(editableNestedFields)) {
+			const values = body[group];
+			if (!values || typeof values !== "object" || Array.isArray(values)) {
+				continue;
+			}
+			for (const field of fields) {
+				if (Object.hasOwn(values, field)) {
+					caseRecord.set(`${group}.${field}`, values[field]);
+				}
+			}
+		}
+
+		const newAttachments = (req.files ?? []).map((file) => ({
+			id: file.caseAttachmentId,
+			originalName: file.originalname,
+			storedName: file.filename,
+			mimeType: file.mimetype,
+			size: file.size,
+		}));
+		caseRecord.attachments.push(...newAttachments);
+		caseRecord.lastSavedAt = new Date();
+		await caseRecord.save();
+		await caseRecord.populate([
+			{ path: "assignment.assignedTo", select: "username email" },
+			{ path: "assignment.assignedVolunteer", select: "name role email" },
+		]);
+
+		return res.json(caseRecord);
+	} catch (error) {
+		await removeUploadedFiles(req.files);
+		if (error instanceof SyntaxError) {
+			return res.status(400).json({ message: "Invalid case data." });
+		}
+		if (error.name === "ValidationError" || error.name === "CastError") {
+			return res.status(400).json({ message: error.message });
+		}
+
+		console.error("Failed to update case:", error);
+		return res.status(500).json({ message: "Failed to update case" });
 	}
 };

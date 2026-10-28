@@ -13,11 +13,13 @@ function RehabilitationComponent({ cases, isLoading, error }) {
 	const normalizedSearch = searchTerm.trim().toLowerCase();
 
 	const filteredCases = cases.filter((caseRecord) => {
-		const assignedTo = caseRecord.assignment?.assignedTo;
+		const assignedTo =
+			caseRecord.assignment?.assignedVolunteer ||
+			caseRecord.assignment?.assignedTo;
 		const assignee =
 			typeof assignedTo === "string"
 				? assignedTo
-				: `${assignedTo?.username || ""} ${assignedTo?.email || ""}`;
+				: `${assignedTo?.name || assignedTo?.username || ""} ${assignedTo?.email || ""}`;
 
 		const searchableText = [
 			caseRecord.caseNumber,
