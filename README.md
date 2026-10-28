@@ -1,199 +1,198 @@
-<!-- REPLACE ALL THE [USERNAME] TEXT WITH YOUR GITHUB PROFILE NAME & THE [PROJECTNAME] WITH THE NAME OF YOUR GITHUB PROJECT -->
+<!-- Repository Information & Links -->
 
-<!-- Repository Information & Links-->
-<!-- HEADER SECTION -->
 <h5 align="center" style="padding:0;margin:0;">Robert van Eijk</h5>
 <h5 align="center" style="padding:0;margin:0;">251185</h5>
 <h6 align="center">DV200 2026</h6>
-</br>
+<br />
 <p align="center">
-
   <a href="https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird">
-    <img src="frontend/src/assets/readmeImages/Logo.png" alt="Logo" width="400" height="400">
+    <img src="frontend/src/assets/readmeImages/Logo.png" alt="SpottyBird Wildlife logo" width="300">
   </a>
-  
-  <h3 align="center">SpottyBird Wildlife</h3>
-
-  <p align="center">
-    Short Project Slogan / Description <br>
-      <a href="https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird"><strong>Explore the docs »</strong></a>
-   <br />
-   <br />
-   <a href="path/to/demonstration/video">View Demo</a>
-    ·
-    <a href="https://github.com/username/projectname/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/username/projectname/issues">Request Feature</a>
 </p>
 
-<!--PROJECT DESCRIPTION-->
+<h3 align="center">SpottyBird Wildlife</h3>
+
+<p align="center">
+  A wildlife rescue management portal for tracking reports, animal care, and volunteer shifts.
+  <br /><br />
+  <a href="#about-the-project"><strong>Explore the project</strong></a>
+  ·
+  <a href="https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird/issues/new">Report a bug</a>
+  ·
+  <a href="https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird/issues/new">Request a feature</a>
+</p>
 
 ## About the Project
 
-<!-- header image of project -->
-
-### Project Description
-
-A nice introduction to this amazing project of mine.
+SpottyBird Wildlife is a web application concept for wildlife rescue teams. It brings animal intake records, case progress, rehabilitation information, and volunteer scheduling into one staff-facing workspace. Staff can record an animal's condition and incident details, follow its case through the care workflow, and coordinate volunteers and shifts.
 
 ### Built With
 
-- [MongoDB]([path/to/technology/website](https://www.mongodb.com/lp/cloud/atlas/try4-reg?utm_source=google&utm_campaign=search_gs_pl_evergreen_mongodb_general_prosp-brand_gic-null_emea-multi_ps-all_desktop_eng_lead&utm_term=mongo%20database&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=23930728972&adgroup=197004289829&cq_cmp=23930728972&gad_source=1&gad_campaignid=23930728972&gbraid=0AAAAADQ1400ViKfN-IryK96sCyKXrTm55&gclid=CjwKCAjwuobXBhBXEiwAYUaIlWOSRExJa29xp56vkX0yrcoATIYnepT9WMXhUyztlnaJjtpgC55ahBoCiXQQAvD_BwE))
-- [Express.Js]([path/to/technology/website](https://expressjs.com/))
-- [React Vite]([path/to/technology/website](https://vite.dev/guide/))
-- [Node.Js]([path/to/technology/website](https://nodejs.org/en))
-
-<!-- GETTING STARTED -->
-<!-- Make sure to add appropriate information about what prerequesite technologies the user would need and also the steps to install your project on their own mashines -->
+- [React](https://react.dev/) and [Vite](https://vite.dev/) for the frontend
+- [Express](https://expressjs.com/) and [Node.js](https://nodejs.org/) for the API
+- [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/) for data storage
+- [React Router](https://reactrouter.com/) for page navigation
+- [Chart.js](https://www.chartjs.org/) for dashboard visualizations
+- [Lucide](https://lucide.dev/) and [Font Awesome](https://fontawesome.com/) for icons
 
 ## Getting Started
 
-The following instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Follow these steps to run the application locally for development.
 
 ### Prerequisites
 
-Ensure that you have the latest version of [Software](path/to/where/they/can/download/software) installed on your machine. The [Plugin](path/to/where/they/can/download/plugin) plugin will also be required.
-
-### How to install
+- [Node.js](https://nodejs.org/) 20.19 or newer (or 22.12 or newer) and npm
+- A [MongoDB Atlas](https://www.mongodb.com/atlas) cluster or a local MongoDB instance
+- Git
 
 ### Installation
 
-Here are a couple of ways to clone this repo:
+1. Clone the repository and enter the project directory:
 
-1.  Software </br>
-    `Android Studio` -> `File` -> `New` -> `From Version Control` -> `Git`</br>
-    Enter `https://github.com/username/projectname.git` into the URL field and press the `Clone` button.
+   ```sh
+   git clone https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird.git
+   cd DV200_Theme_4_SpottyBird
+   ```
 
-2.  Clone Repository </br>
-    Run the following in the command-line to clone the project:
+2. Install the backend and frontend dependencies:
 
-    ```sh
-    git clone https://github.com/username/projectname.git
-    ```
+   ```sh
+   cd server
+   npm install
+   cd ../frontend
+   npm install
+   cd ..
+   ```
 
-        Open `Software` and select `File | Open...` from the menu. Select cloned directory and press `Open` button
+3. Create `server/.env` and add your MongoDB connection string and a private JWT signing secret:
 
-3.  Install Dependencies </br>
-    Run the following in the command-line to install all the required dependencies:
+   ```env
+   MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>/<database>
+   JWT_SECRET=replace-with-a-long-random-secret
+   PORT=5001
+   ```
 
-    ```sh
-    npm install
-    ```
+   For a local MongoDB installation, use its connection URI instead. Keep real credentials private and do not commit the `.env` file.
 
-4.  Get a free API Key at [https://example.com](https://example.com) and enter it in the `config.js` file:
-    ```js
-    const API_KEY = "ENTER YOUR API";
-    ```
+4. Create a staff login. Add these values to `server/.env` temporarily, using a unique username, email, and password:
 
-<!-- FEATURES AND FUNCTIONALITY-->
-<!-- You can add the links to all of your imagery at the bottom of the file as references -->
+   ```env
+   CREATE_USER_USERNAME=your-username
+   CREATE_USER_EMAIL=you@example.com
+   CREATE_USER_PASSWORD=use-a-strong-password
+   ```
+
+   Then run:
+
+   ```sh
+   cd server
+   npm run create-user
+   ```
+
+   After the account is created, remove the three `CREATE_USER_...` entries from `server/.env`.
+
+5. Start the backend and frontend in separate terminals from the project directory:
+
+   ```sh
+   cd server
+   npm run dev
+   ```
+
+   ```sh
+   cd frontend
+   npm run dev
+   ```
+
+   Open the local URL printed by Vite (usually `http://localhost:5173`). The Vite development server proxies `/api` requests to the backend at `http://localhost:5001`. The API connects to MongoDB at startup and creates its default enclosure records if they are missing.
 
 ## Features and Functionality
 
-![Log In](frontend/src/assets/readmeImages/LogIn.png)
+### Staff login
 
-### Feature 1
+Staff members sign in with an account created by the backend's `create-user` script. The application stores the returned authentication token in browser local storage and uses it for protected volunteer and shift operations.
 
-Description of Feature
+![SpottyBird login screen](frontend/src/assets/readmeImages/LogIn.png)
 
-![Main](frontend/src/assets/readmeImages/Main.png)
+### Dashboard
 
-### Feature 2
+The dashboard visualizes case workflow stages, animal types, active species, and admissions compared with releases.
 
-Description of Feature
+![SpottyBird dashboard](frontend/src/assets/readmeImages/Main.png)
 
-![Cases](frontend/src/assets/readmeImages/Cases.png)
+### Case management
 
-### Feature 3
+Browse recent wildlife cases and narrow the list by animal type, location, urgency, status, or assignee. Open a case to review its individual record.
 
-Description of Feature
+![Wildlife cases list](frontend/src/assets/readmeImages/Cases.png)
 
-![Admission](frontend/src/assets/readmeImages/Admissions.png)
+### Admissions and saved drafts
 
-### Feature 4
+Create or update an animal admission with finder, animal, incident, clinical, assignment, and release-plan details. Incomplete forms can be saved as drafts and resumed later; case records can also include file attachments.
 
-Description of Feature
+![Animal admission form](frontend/src/assets/readmeImages/Admissions.png)
 
-![Rehabilitation](frontend/src/assets/readmeImages/Rehabilitation.png)
+### Rehabilitation tracking
 
-### Feature 5
+Review animals in care or ready for release, with summary counts for animals in care, critical cases, release-ready cases, and records needing updates.
 
-Description of Feature
+![Rehabilitation overview](frontend/src/assets/readmeImages/Rehabilitation.png)
 
-![Volunteer Scheduling](frontend/src/assets/readmeImages/Volunbteers.png)
+### Volunteer directory and shift scheduling
 
-### Feature 6
+Review volunteer availability, search and filter the directory, add contacts, view the weekly shift calendar, and assign or unassign volunteers from shifts.
 
-Description of Feature
+![Volunteer schedule](frontend/src/assets/readmeImages/Volunbteers.png)
 
-![Single Case Overview](frontend/src/assets/readmeImages/Case Details.png)
+### Individual case records
 
-<!-- DEVELOPMENT PROCESS -->
+View case and animal details, update the record, and access associated attachments.
+
+![Individual wildlife case](<frontend/src/assets/readmeImages/Case Details.png>)
 
 ## Development Process
 
-The `Development Process` is the technical implementations and functionality done in the frontend and backend of the application.
+The project is organized into a Vite/React frontend and an Express API backed by MongoDB. The API separates routes, controllers, models, middleware, and utility code. Mongoose models represent cases, users, volunteers, shifts, enclosures, and case-number counters.
 
-### Implementation Process
+### Implementation Highlights
 
-<!-- stipulate all of the functionality you included in the project -->
+- Implemented JSON API endpoints for animal cases, admissions drafts, rehabilitation summaries, and dashboard statistics.
+- Added case statuses that represent the workflow from new report through assessment and care to release readiness and closure.
+- Added account login with bcrypt password comparison and JSON Web Token authentication for protected volunteer and shift routes.
+- Added weekly volunteer shift creation and assignment, along with volunteer contact management.
+- Added case attachment upload and retrieval, with file metadata stored alongside the case.
+- Used reusable React components for forms, filters, status and priority labels, dashboard cards, and scheduling.
 
-- Made use of both `functionality` to implement a specific feature.
-- `MVC/MVVM` design architecture implemented.
-- `Plugin` for this.
-- ETC.
+### Challenges
 
-#### Highlights
+- Keeping admission form data consistent across drafts, complete cases, and individual case updates requires careful mapping between nested form fields and the database model.
+- Case attachment handling needs to keep uploaded files associated with the correct record and safely serve those files again.
+- Shift scheduling calender, getting the calendar to work and accurately pull data through from the DB as well as getting the volunteers linked up to the specific backend link to allocate them to that specific shift slot.
 
-<!-- stipulated the highlight you experienced with the project -->
+## Future Improvements
 
-- Sunshine.
-- Rainbows.
+- Add role-based permissions and a staff-facing logout/session-expiry flow.
+-
 
-#### Challenges
-
-<!-- stipulated the challenges you faced with the project and why you think you faced it or how you think you'll solve it (if not solved) -->
-
-- Bugs.
-- Bugs.
-
-### Future Implementation
-
-<!-- stipulate functionality and improvements that can be implemented in the future. -->
-
-- Future 1.
-- Future 2.
-
-<!-- VIDEO DEMONSTRATION -->
-
-### Video Demonstration
+## Video Demonstration
 
 To see a run through of the application, click below:
 
 [View Demonstration](path/to/video/demonstration)
 
-<!-- AUTHORS -->
-
 ## Authors
 
-- **Robert van Eijk** - [RobertvanEijk-OW-251185](https://github.com/RobertvanEijk-OW-251185)
-
-<!-- LICENSE -->
+- **Robert van Eijk** — [RobertvanEijk-OW-251185](https://github.com/RobertvanEijk-OW-251185)
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.\
-
-<!-- ACKNOWLEDGEMENTS -->
+No license file is currently included in this repository. Terms for reuse have not been specified.
 
 ## Acknowledgements
 
-<!-- all resources that you used and Acknowledgements here -->
-
-- [Resource Name](path/to/resource)
-- [Resource Name](path/to/resource)
-- [Resource Name](path/to/resource)
-- [Resource Name](path/to/resource)
-- [Resource Name](path/to/resource)
-
-
+- [MongoDB documentation](https://www.mongodb.com/docs/)
+- [Express documentation](https://expressjs.com/)
+- [React documentation](https://react.dev/learn)
+- [Vite documentation](https://vite.dev/guide/)
+- [Chart.js documentation](https://www.chartjs.org/docs/latest/)
+- [Lucide icons](https://lucide.dev/)
+- [Font Awesome](https://fontawesome.com/)
