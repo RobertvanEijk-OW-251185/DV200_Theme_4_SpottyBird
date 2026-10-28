@@ -16,7 +16,7 @@
 
   <p align="center">
     Short Project Slogan / Description <br>
-      <a href="https://github.com/username/projectname"><strong>Explore the docs »</strong></a>
+      <a href="https://github.com/RobertvanEijk-OW-251185/DV200_Theme_4_SpottyBird"><strong>Explore the docs »</strong></a>
    <br />
    <br />
    <a href="path/to/demonstration/video">View Demo</a>
