@@ -9,7 +9,7 @@
 	/* column-gap: 24px; */
 	column-gap: 0.75rem;
 	grid-template-rows: repeat(3, minmax(0, 1fr));
-	grid-template-columns: repeat(8, minmax(0, 1fr));
+	grid-template-columns: repeat(7, minmax(0, 1fr));
 
 	/* padding-bottom: 2rem; */
 }
@@ -27,18 +27,22 @@
 }
 
 .case_info_card {
-	/* display: flex; */
-	flex-direction: row;
+	display: flex;
+	padding: 0.875rem 1.5rem;
+	flex-direction: column;
+	align-items: center;
+	gap: 2.5rem;
+	align-self: stretch;
 
-	gap: 4rem;
+	grid-row: 1 / span 3;
+	grid-column: 1 / span 3;
 
-	grid-row: 1 / span 1;
-	grid-column: 1 / span 6;
+	justify-self: stretch;
 }
 
 .case_animal_image {
 	display: block;
-	width: 16.96831rem;
+	/* width: 16.96831rem; */
 	align-self: stretch;
 	aspect-ratio: 79/71;
 	object-fit: cover;
@@ -47,13 +51,24 @@
 	background-color: lightgray;
 }
 
+.info_text_animal {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.5rem;
+	align-self: stretch;
+}
+
 .animal_info_text {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
-	align-items: flex-start;
+	justify-content: flex-start;
+	align-items: center;
 	flex: 1 0 0;
 	align-self: stretch;
+
+	gap: 5rem;
 }
 
 .priority_tags {
@@ -72,10 +87,11 @@
 
 .case_assigned_info {
 	display: flex;
-	width: 22.0625rem;
-	height: 6.4375rem;
-	flex-direction: column;
-	justify-content: center;
+	width: 100%;
+	/* width: 22.0625rem;
+	height: 6.4375rem; */
+	flex-direction: row;
+	justify-content: space-between;
 	align-items: flex-start;
 	gap: 0.875rem;
 }
@@ -85,16 +101,46 @@
 	justify-content: space-between;
 	align-items: center;
 	align-self: stretch;
+
+	gap: 5rem;
+}
+
+.case_assignee {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+
+	align-self: stretch;
+
+	width: 100%;
 }
 
 .quick_actions {
+	display: flex;
+	padding: 0.875rem 1.5rem;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	align-self: stretch;
+
+	justify-self: stretch;
+
+	grid-row: 1 / span 3;
+	grid-column: 6 / span 2;
+}
+
+.qa_a,
+.qa_ps,
+.qa_ds {
+	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
-	gap: 1.25rem;
+	gap: 1rem;
 
-	grid-row: 1 / span 1;
-	grid-column: 7 / span 2;
+	height: 100%;
+	width: 100%;
 }
 
 .quick_actions_buttons {
@@ -195,21 +241,32 @@
 
 .incident_description {
 	display: flex;
+	padding: 0.875rem 1.5rem;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	align-self: stretch;
+	grid-row: 1 / span 3;
+	grid-column: 4 / span 2;
+	justify-self: stretch;
+}
+
+.i_d,
+.i_c,
+._cd {
+	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
-	/* width: 100%; */
+	gap: 1rem;
 
-	gap: 0.5rem;
-
-	grid-row: 3 / span 1;
-	grid-column: 1 / span 2;
+	height: 100%;
 }
 
 .descriptions {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: flex-start;
 
 	height: 100%;
